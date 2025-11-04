@@ -1,4 +1,4 @@
-import { IUser } from "../models/user.model";
+import { type IUser } from "../models/user.model";
 import  { Types }  from "mongoose";
 import jwt from 'jsonwebtoken';
 import { SECRET } from "./env";

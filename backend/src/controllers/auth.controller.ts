@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import UserModel from "../models/user.model";
 import { encrypt } from "../utils/encryption";
 import { generateToken } from "../utils/jwt";
-import { IReqUser } from "../middlewares/auth.middleware";
+import { type IReqUser } from "../middlewares/auth.middleware";
 
 type TRegister = {
     fullName: string;
@@ -40,6 +40,13 @@ const registerValidateSchema = Yup.object({
 
 export default {
     async register(req: Request<{},{},TRegister>,res: Response) {
+        /*
+         @  swagger.requestBody = {
+            required: true,
+            schema: {$ref: "#/components/schemas/RegisterRequest"}
+         }
+         */
+        
         const {
             fullName,
             username,
@@ -82,7 +89,12 @@ export default {
     },
 
     async login(req: Request<{},{},TLogin>, res: Response) {
-
+        /** 
+         #swagger.requestBody = {
+            required: true,
+            schema: {$ref: "#/components/schemas/LoginRequest"}
+         }
+         */
         const {
             identifier,
             password
@@ -151,6 +163,11 @@ export default {
     },
 
     async me(req: IReqUser, res: Response) {
+        /** 
+         #swagger.security = [{
+            "bearerAuth": []
+         }]
+         */
         
         try {
 
