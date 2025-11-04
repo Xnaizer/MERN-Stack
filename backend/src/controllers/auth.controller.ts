@@ -22,13 +22,13 @@ type TRegister = {
 //     }
 // }
 
-    const registerValidateSchema = Yup.object({
-        fullName: Yup.string().required(),
-        username: Yup.string().required(),
-        email: Yup.string().required(),
-        password: Yup.string().required(),
-        confirmPassword: Yup.string().required().oneOf([Yup.ref('password'), ""], "Password not match")
-    })
+const registerValidateSchema = Yup.object({
+    fullName: Yup.string().required(),
+    username: Yup.string().required(),
+    email: Yup.string().required(),
+    password: Yup.string().required(),
+    confirmPassword: Yup.string().required().oneOf([Yup.ref('password'), ""], "Password not match")
+});
 
 export default {
     async register(req: Request<{},{},TRegister>,res: Response) {
