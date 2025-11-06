@@ -1,6 +1,7 @@
-import { type Express } from "express";
+import type {  Express, Response, Request } from "express";
 import swaggerUi from 'swagger-ui-express';
-import swaggerOutput from "./swagger_output.json";
+import { swaggerSpec } from "./swagger";
+
 
 import fs from "fs";
 import path from "path";
@@ -12,8 +13,15 @@ export default function docs(app: Express) {
     app.use(
         "/api-docs",
         swaggerUi.serve,
-        swaggerUi.setup(swaggerOutput, {
+        swaggerUi.setup(swaggerSpec, {
             customCss: css
         })
     );
+
+    app.get("/api-docs.json", (req: Request, res: Response) => {
+        res.setHeader("Content-Type", "application/json");
+        res.send(swaggerSpec);
+    });
+
+    
 }

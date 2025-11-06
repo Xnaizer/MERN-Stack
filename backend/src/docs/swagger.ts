@@ -1,45 +1,135 @@
-import swaggerAutogen from 'swagger-autogen';
+import swaggerJSDoc from "swagger-jsdoc";
+import { version } from "../../package.json";
 
-
-const doc = {
+const doc: swaggerJSDoc.Options = {
+  definition: {
+    openapi: "3.0.0",
     info: {
-        version: "v0.0.1",
-        title: "Dokumentasi MERN Stack Backend API",
-        description: "Docs here"
+      title: "MERN Stack Backend API",
+      description: "Swagger Documentation for MERN Stack Backend API",
+      version,
     },
     servers: [
-        {
-            url: "http://localhost:3000/api",
-            description: "Local Server"
-        },
-        {
-            url: "https://mern-stack-be.vercel.app/api",
-            description: "Deploy Server"
-        }
+      {
+        url: "http://localhost:3000/api",
+        description: "Local Server",
+      },
+      {
+        url: "https://mern-stack-be.vercel.app/api",
+        description: "Production Server",
+      },
     ],
     components: {
-        securitySchemes: {
-            bearerAuth: {
-                type: "http",
-                scheme: "bearer",
-            }
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Enter JWT token here (format: Bearer <token>)",
         },
-        schemas: {
-            LoginRequest: {
-                identifier: "seseorang@gmail.com",
-                password: "12341234"
-            }
-        }
-    }
-}
+      },
+      schemas: {
+        CreateUserInput: {
+          type: "object",
+          required: [
+            "fullName",
+            "username",
+            "email",
+            "password",
+            "confirmPassword",
+          ],
+          properties: {
+            fullName: {
+              type: "string",
+              example: "John Doe",
+            },
+            username: {
+              type: "string",
+              example: "johndoe123",
+            },
+            email: {
+              type: "string",
+              example: "john.doe@gmail.com",
+            },
+            password: {
+              type: "string",
+              example: "john12345",
+            },
+            confirmPassword: {
+              type: "string",
+              example: "john12345",
+            },
+          },
+        },
 
+        CreateUserResponse: {
+          type: "object",
+          properties: {
+            _id: {
+              type: "string",
+              example: "6719d2b3a0b5f4a1ef43b8a2",
+            },
+            fullName: {
+              type: "string",
+              example: "John Doe",
+            },
+            username: {
+              type: "string",
+              example: "johndoe123",
+            },
+            email: {
+              type: "string",
+              example: "john.doe@gmail.com",
+            },
+            role: {
+              type: "string",
+              example: "user",
+            },
+          },
+        },
 
-const outputFile = "./swagger_output.json";
-const endpointFiles = [
-  "../routes/api.ts",
-  "../controllers/auth.controller.ts",
-  "../controllers/dummy.controller.ts"
-];
+        LoginRequest: {
+          type: "object",
+          required: ["identifier", "password"],
+          properties: {
+            identifier: {
+              type: "string",
+              example: "john.doe@gmail.com",
+            },
+            password: {
+              type: "string",
+              example: "john12345",
+            },
+          },
+        },
 
+        LoginResponse: {
+          type: "object",
+          properties: {
+            status: {
+              type: "string",
+              example: "success",
+            },
+            message: {
+              type: "string",
+              example: "Login Success",
+            },
+            data: {
+              type: "string",
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            },
+          },
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+  },
+  
+  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],
+};
 
-swaggerAutogen({ openapi: "3.0.0"})(outputFile, endpointFiles, doc);
+export const swaggerSpec = swaggerJSDoc(doc);

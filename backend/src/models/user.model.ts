@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { encrypt } from "../utils/encryption";
 
+
+
 export interface IUser {
     fullName: string;
     username: string;

@@ -30,6 +30,37 @@ type TLogin = {
 //     }
 // }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     CreateUserInput:
+ *       type: object
+ *       required:
+ *         - fullName
+ *         - username
+ *         - email
+ *         - password
+ *         - confirmPassword
+ *       properties:
+ *         fullName:
+ *           type: string
+ *           example: John Doe
+ *         username:
+ *           type: string
+ *           example: johndoe123
+ *         email:
+ *           type: string
+ *           example: john.doe@gmail.com
+ *         password:
+ *           type: string
+ *           example: john12345
+ *         confirmPassword:
+ *           type: string
+ *           example: john12345
+ */
+
+
 const registerValidateSchema = Yup.object({
     fullName: Yup.string().required(),
     username: Yup.string().required(),
@@ -40,12 +71,7 @@ const registerValidateSchema = Yup.object({
 
 export default {
     async register(req: Request<{},{},TRegister>,res: Response) {
-        /*
-         @  swagger.requestBody = {
-            required: true,
-            schema: {$ref: "#/components/schemas/RegisterRequest"}
-         }
-         */
+
         
         const {
             fullName,
@@ -89,12 +115,7 @@ export default {
     },
 
     async login(req: Request<{},{},TLogin>, res: Response) {
-        /** 
-         #swagger.requestBody = {
-            required: true,
-            schema: {$ref: "#/components/schemas/LoginRequest"}
-         }
-         */
+
         const {
             identifier,
             password
@@ -163,11 +184,7 @@ export default {
     },
 
     async me(req: IReqUser, res: Response) {
-        /** 
-         #swagger.security = [{
-            "bearerAuth": []
-         }]
-         */
+
         
         try {
 
