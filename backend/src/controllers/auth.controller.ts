@@ -146,6 +146,7 @@ export default {
                 ],
             });
 
+            
             if(!userByIdentifier) {
                 return res.status(403).json({
                     status: "failed",
@@ -154,7 +155,15 @@ export default {
                 });
             }
 
-            
+            if(!userByIdentifier.isActive){
+                return res.status(403).json({
+                    status: "failed",
+                    message: "Complete your account activation on your email!",
+                    data: null
+                })
+            }
+
+            console.log(!userByIdentifier.isActive)
 
             // validate password
 
@@ -168,6 +177,7 @@ export default {
                 });
 
             }
+
 
 
             const token = generateToken({
@@ -223,6 +233,39 @@ export default {
                 message: err.message,
                 data: null
             });
+        }
+    },
+
+    async activation(req: Request, res: Response) {
+        try {
+
+            const  { code }  = req.body as { code : string };
+
+            const user = await UserModel.findOneAndUpdate(
+                {
+                    activationCode: code,
+                },
+                {
+                    isActive: true,
+                },
+                {
+                    new: true,
+                }
+            );
+
+            res.status(200).json({
+                status: "success",
+                message : "User successfully activated!",
+                body: user
+            })
+
+        } catch (error) {
+            const err = error as unknown as Error;
+            res.status(400).json({
+                status: "failed",
+                message: err.message,
+                body: null
+            })
         }
     }
 

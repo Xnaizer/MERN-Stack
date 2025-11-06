@@ -91,11 +91,34 @@ const router = express.Router();
  *                       example: user
  *       403:
  *         description: Unauthorized - Missing or invalid token
+ *
+ * /auth/activation:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Activate a user account
+ *     description: Activate user account using activation code sent via email.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ActivationRequest'
+ *     responses:
+ *       200:
+ *         description: Successfully activated user account
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ActivationResponse'
+ *       403:
+ *         description: Unauthorized - Invalid activation code
  */
 
 router.post("/auth/register", authController.register);
 router.post("/auth/login", authController.login);
 router.get("/auth/me", authMiddleware, authController.me);
+router.post("/auth/activation", authController.activation);
 
 
 
