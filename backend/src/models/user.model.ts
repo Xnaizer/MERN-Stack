@@ -22,11 +22,13 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema<IUser>({
     fullName: {
         type : Schema.Types.String,
-        required: true
+        required: true,
+        unique: true
     },
     username: {
         type: Schema.Types.String,
-        required: true
+        required: true,
+        unique: true
     },
     email: {
         type: Schema.Types.String,
