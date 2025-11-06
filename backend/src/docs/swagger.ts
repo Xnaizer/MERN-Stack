@@ -1,5 +1,6 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import { version } from "../../package.json";
+import path from 'path';
 
 const doc: swaggerJSDoc.Options = {
   definition: {
@@ -129,7 +130,9 @@ const doc: swaggerJSDoc.Options = {
     ],
   },
   
-  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],
+  apis: [
+    path.join(__dirname, "./src/routes/*.{ts,js}"), 
+    path.join("./src/controllers/*.{ts,js}")],
 };
 
 export const swaggerSpec = swaggerJSDoc(doc);
