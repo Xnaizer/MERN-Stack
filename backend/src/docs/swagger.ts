@@ -1,6 +1,16 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import { version } from "../../package.json";
-import path from 'path';
+import path from "path";
+
+const isProd = process.env.NODE_ENV === "production";
+
+const routesPath = isProd
+  ? path.resolve(__dirname, "../routes/*.js")
+  : path.resolve(__dirname, "../routes/*.ts");
+
+const controllersPath = isProd
+  ? path.resolve(__dirname, "../controllers/*.js")
+  : path.resolve(__dirname, "../controllers/*.ts");
 
 const doc: swaggerJSDoc.Options = {
   definition: {
@@ -12,12 +22,10 @@ const doc: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000/api",
-        description: "Local Server",
-      },
-      {
-        url: "https://mern-stack-be.vercel.app/api",
-        description: "Production Server",
+        url: isProd
+          ? "https://mern-stack-be.vercel.app/api"
+          : "http://localhost:3000/api",
+        description: isProd ? "Production Server" : "Local Server",
       },
     ],
     components: {
@@ -40,81 +48,36 @@ const doc: swaggerJSDoc.Options = {
             "confirmPassword",
           ],
           properties: {
-            fullName: {
-              type: "string",
-              example: "John Doe",
-            },
-            username: {
-              type: "string",
-              example: "johndoe123",
-            },
-            email: {
-              type: "string",
-              example: "john.doe@gmail.com",
-            },
-            password: {
-              type: "string",
-              example: "john12345",
-            },
-            confirmPassword: {
-              type: "string",
-              example: "john12345",
-            },
+            fullName: { type: "string", example: "John Doe" },
+            username: { type: "string", example: "johndoe123" },
+            email: { type: "string", example: "john.doe@gmail.com" },
+            password: { type: "string", example: "john12345" },
+            confirmPassword: { type: "string", example: "john12345" },
           },
         },
-
         CreateUserResponse: {
           type: "object",
           properties: {
-            _id: {
-              type: "string",
-              example: "6719d2b3a0b5f4a1ef43b8a2",
-            },
-            fullName: {
-              type: "string",
-              example: "John Doe",
-            },
-            username: {
-              type: "string",
-              example: "johndoe123",
-            },
-            email: {
-              type: "string",
-              example: "john.doe@gmail.com",
-            },
-            role: {
-              type: "string",
-              example: "user",
-            },
+            _id: { type: "string", example: "6719d2b3a0b5f4a1ef43b8a2" },
+            fullName: { type: "string", example: "John Doe" },
+            username: { type: "string", example: "johndoe123" },
+            email: { type: "string", example: "john.doe@gmail.com" },
+            role: { type: "string", example: "user" },
           },
         },
-
         LoginRequest: {
           type: "object",
           required: ["identifier", "password"],
           properties: {
-            identifier: {
-              type: "string",
-              example: "john.doe@gmail.com",
-            },
-            password: {
-              type: "string",
-              example: "john12345",
-            },
+            identifier: { type: "string", example: "john.doe@gmail.com" },
+            password: { type: "string", example: "john12345" },
           },
         },
-
         LoginResponse: {
           type: "object",
           properties: {
-            status: {
-              type: "string",
-              example: "success",
-            },
-            message: {
-              type: "string",
-              example: "Login Success",
-            },
+            status: { type: "string", example: "success" },
+            message: { type: "string", example: "Login Success" },
             data: {
               type: "string",
               example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -129,10 +92,12 @@ const doc: swaggerJSDoc.Options = {
       },
     ],
   },
-  
-  apis: [
-    path.join(__dirname, "./src/routes/*.{ts,js}"), 
-    path.join("./src/controllers/*.{ts,js}")],
+  apis: [routesPath, controllersPath],
 };
+
+console.log("🟢 Swagger scanning files:");
+console.log("   Routes:", routesPath);
+console.log("   Controllers:", controllersPath);
+console.log("   Environment:", isProd ? "Production" : "Development");
 
 export const swaggerSpec = swaggerJSDoc(doc);
