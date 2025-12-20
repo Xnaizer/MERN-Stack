@@ -1,45 +1,33 @@
-import express from 'express';
+import express from "express";
+import router from "./routes/api";
 import bodyParser from 'body-parser';
-import router from './routes/api';
-import db from './utils/database';
-import docs from './docs/route';
-import cors from 'cors';
+import db from "./utils/database";
 
 async function init() {
+  
+  console.log("Server is starting...");
+
+  try {
+
+    const dbConnection = await db();
+    console.log("database status:", dbConnection);
     
-    try {
+    const app = express();
+    app.use(bodyParser.json());
 
-        const resultConnectDb = await db();
-        console.log("Database Status: ", resultConnectDb);
+    const PORT = 3000;
 
-        const app = express();
+    app.use("/api", router);
 
-        app.use(cors());
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}/api`);
+    });
 
-        app.use(bodyParser.json());
+  } catch (error) {
+    console.log(error);
+  }
 
-        const PORT = 3000;
-
-        app.get("/", (req, res) => {
-            res.status(200).json({
-                status: "success",
-                message: "Server Is Running!",
-                data: null
-            })
-        })
-
-
-        app.use('/api', router);
-        docs(app);
-
-        app.listen(PORT, () => {
-            console.log(`Hey teman!, Server Running on http://localhost:${PORT}`);
-        });
-
-    } catch (error) {
-        console.log(error);
-    }
 }
 
-
 init();
+

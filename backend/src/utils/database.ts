@@ -1,19 +1,19 @@
-import mongoose from 'mongoose';
-import { DATABASE_URL } from './env';
+import mongoose from "mongoose";
+import { DATABASE_URL } from "./env";
 
 const connect = async () => {
 
-    try{
+    try {
         await mongoose.connect(DATABASE_URL, {
-            dbName: "mern-stack-db",
+            dbName: "mern-stack-db"
         });
 
         return Promise.resolve("Database Connected!");
+
     } catch (error) {
         return Promise.reject(error);
-
     }
-}
 
+}
 
 export default connect;
