@@ -24,7 +24,25 @@ const registerValidateSchema = Yup.object({
     fullName: Yup.string().required(),
     username: Yup.string().required(),
     email: Yup.string().email().required(),
-    password: Yup.string().required(),
+    password: Yup.string().required().min(6, "password must be 6 characters").test(
+        'at-least-one-uppercase-letter', 
+        "contains at least one uppercase letter", 
+        (value) => {
+            if(!value) return false;
+
+            const regex = /^(?=.*[A-Z])/;
+            return regex.test(value);
+        }
+    ).test(
+        'at-least-one-number', 
+        "contains at least one number", 
+        (value) => {
+            if(!value) return false;
+
+            const regex = /^(?=.*\d)/;
+            return regex.test(value);
+        }
+    ),
     confirmPassword: Yup.string().required().oneOf([Yup.ref('password'), ""], "Password not match")
 })
 
@@ -72,21 +90,31 @@ export default {
             const userByIdentifier = await UserModel.findOne({
                 $or: [
                     {
-                        email: identifier
+                        email: identifier,
                     },
                     {
-                        username: identifier
+                        username: identifier,
                     }
-                ]
+                ],
             });
 
+            
             if(!userByIdentifier) {
                 return res.status(403).json({
-                    status: 'Failed',
-                    message: 'user not found',
+                    status: "failed",
+                    message: "User Not Found!",
+                    data: null
+                });
+            }
+
+            if(!userByIdentifier.isActive){
+                return res.status(403).json({
+                    status: "failed",
+                    message: "Complete your account activation on your email!",
                     data: null
                 })
             }
+
             
             const validatePassword: boolean = encrypt(password) === userByIdentifier.password;
 
@@ -133,6 +161,49 @@ export default {
 
         } catch (error) {
             const err = error as unknown as Error;
+            res.status(400).json({
+                status: 'failed',
+                message: err.message,
+                data: null
+            })
+        }
+    },
+    
+    async activation(req: Request, res: Response) {
+        try {
+            const { code } = req.body as { code: string };
+
+            if (!code) {
+                return res.status(400).json({
+                    status: 'failed',
+                    message: 'activation code is required',
+                    data: null
+                });
+            }
+
+            const user = await UserModel.findOneAndUpdate(
+                { activationCode: code },
+                { isActive: true },
+                { new: true }
+            );
+
+            if (!user) {
+                return res.status(403).json({
+                    status: 'failed',
+                    message: 'invalid activation code',
+                    data: null
+                });
+            }
+
+            return res.status(200).json({
+                status: 'success',
+                message: 'user successfully activated',
+                data: user
+            })
+
+        } catch (error) {
+            const err = error as unknown as Error;
+
             res.status(400).json({
                 status: 'failed',
                 message: err.message,

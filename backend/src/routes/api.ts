@@ -105,6 +105,32 @@ router.get("/auth/me", authMiddleware, authController.me);
  *         description: Unauthorized - Missing or invalid token
  */
 
+router.post("/auth/activation", authController.activation)
+/**
+ * @openapi
+ * /auth/activation:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Activate a user account
+ *     description: Activate user account using activation code sent via email.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ActivationRequest'
+ *     responses:
+ *       200:
+ *         description: Successfully activated user account
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ActivationResponse'
+ *       403:
+ *         description: Unauthorized - Invalid activation code
+ */
+
 // dummy controller
 router.get('/dummy', dummyController.dummy);
 

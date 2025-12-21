@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { encrypt } from "../utils/encryption";
+import {renderMailHtml, sendEmail} from '../utils/mail/mail'
+import { CLIENT_HOST, EMAIL_SMTP_USER } from "../utils/env";
 
 export interface IUser {
     fullName: string;
@@ -10,6 +12,7 @@ export interface IUser {
     profilePicture: string;
     isActive: boolean;
     activationCode: string;
+    createdAt?: string;
 }
 
 const Schema = mongoose.Schema;
@@ -21,11 +24,13 @@ const UserSchema = new Schema<IUser>({
     },
     username: {
         type: Schema.Types.String,
-        required: true
+        required: true,
+        unique: true
     },
     email: {
         type: Schema.Types.String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: Schema.Types.String,
@@ -56,8 +61,36 @@ const UserSchema = new Schema<IUser>({
 UserSchema.pre("save", function (next) {
     const user = this;
     user.password = encrypt(user.password);
+    user.activationCode = encrypt(user.id);
 
     next();
+});
+
+UserSchema.post("save", async function (doc, next) {
+    try {
+        const user = doc;
+        console.log("Send email to:", user.email);
+
+        const contentMail = await renderMailHtml("registration-success.ejs", {
+            username: user.username,
+            fullName: user.fullName,
+            email: user.email,
+            createdAt: user.createdAt,
+            activationLink: `${CLIENT_HOST}/auth/activation?code=${user.activationCode}`
+        });
+
+        await sendEmail({
+            from: EMAIL_SMTP_USER,
+            to: user.email,
+            subject: "Aktivasi Akun Anda",
+            content: contentMail
+        })
+    } catch (error) {
+        console.log(error);
+    } finally {
+        next();
+    }
+
 })
 
 UserSchema.methods.toJSON = function () {
