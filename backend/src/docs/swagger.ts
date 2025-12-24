@@ -1,11 +1,16 @@
 import swaggerJSDoc from "swagger-jsdoc";
-import path from 'path';
+import { version } from "../../package.json";
+import path from "path";
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProd = process.env.NODE_ENV === "production";
 
-const routesPath = path.resolve(__dirname, "../routes/*.{ts,js}");
-const controllersPath = path.resolve(__dirname, "../controllers/*.{ts,js}");
+const routesPath = isProd
+  ? path.resolve(__dirname, "../routes/*.js")
+  : path.resolve(__dirname, "../routes/*.ts");
 
+const controllersPath = isProd
+  ? path.resolve(__dirname, "../controllers/*.js")
+  : path.resolve(__dirname, "../controllers/*.ts");
 
 
 const doc: swaggerJSDoc.Options = {
@@ -14,12 +19,12 @@ const doc: swaggerJSDoc.Options = {
         info: {
             title: "MERN Stack Backend API",
             description: "Swagger Documentation for MERN Stack Backend API",
-            version: "v1.0.0"
+            version
         },
         servers: [
             {
-               url: isProduction ? "https://mern-stack-snowy.vercel.app/api"  : "http://localhost:3000/api",
-               description: isProduction ? "Production Server" : "Local Server"
+               url: isProd ? "https://mern-stack-snowy.vercel.app/api"  : "http://localhost:3000/api",
+               description: isProd ? "Production Server" : "Local Server"
             }
         ],
         components: {
@@ -110,6 +115,6 @@ const doc: swaggerJSDoc.Options = {
 console.log("🟢 Swagger scanning files:");
 console.log("   Routes:", routesPath);
 console.log("   Controllers:", controllersPath);
-console.log("   Environment:", isProduction ? "Production" : "Development");
+console.log("   Environment:", isProd ? "Production" : "Development");
 
 export const swaggerSpec = swaggerJSDoc(doc);
