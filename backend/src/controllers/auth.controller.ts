@@ -53,6 +53,7 @@ export default {
             fullName, username, email, password, confirmPassword
         } = req.body as unknown as TRegister;
         
+        
         try {
             
             await registerValidateSchema.validate({

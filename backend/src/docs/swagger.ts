@@ -3,8 +3,10 @@ import path from 'path';
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const routesPath = isProduction ? path.resolve(__dirname, "../routes/*.js") : path.resolve(__dirname, "../routes/*.ts");
-const controllersPath = isProduction ? path.resolve(__dirname, "../controllers/*.js") : path.resolve(__dirname, "../controllers/*.ts");
+const routesPath = path.resolve(__dirname, "../routes/*.{ts,js}");
+const controllersPath = path.resolve(__dirname, "../controllers/*.{ts,js}");
+
+
 
 const doc: swaggerJSDoc.Options = {
     definition: {
