@@ -15,7 +15,7 @@ interface IAuthLayout {
 
 export default function AuthLayout({ children }: IAuthLayout) {
   return (
-    <section className="max-w-screen-3xl 3xl:container p-6">
+    <section className="max-w-screen-3xl 3xl:container">
         {children}
     </section>
   )

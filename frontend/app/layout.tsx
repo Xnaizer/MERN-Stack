@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { cn } from "@/utils/cn";
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/images/general/logo.svg'
+  },
   title: {
     default: "MERN Stack",
     template: "%s | MERN Stack",
