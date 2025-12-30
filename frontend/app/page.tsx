@@ -5,7 +5,7 @@ import { Button } from "@heroui/react";
 export default function Page() {
   return (
     <div>
-      <Button className="bg-amber-200">Click me test hero ui</Button>
+      <Button className="bg-amber-200">landing page here</Button>
     </div>
   );
 }
