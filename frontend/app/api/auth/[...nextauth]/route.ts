@@ -1,10 +1,10 @@
 import environment from "@/config/environment";
 import NextAuth from "next-auth";
-import CredentialsProvider  from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { IJWTExtended, ISessionExtended, IUserExtended } from "@/types/Auth";
 import authServices from "@/services/auth.service";
 
-export default NextAuth({
+const handler = NextAuth({
     session: {
         strategy: "jwt",
         maxAge: 60 * 60 * 24
@@ -15,21 +15,21 @@ export default NextAuth({
             id: "credentials",
             name: "credentials",
             credentials: {
-                identifier: {label: "identifier", type: "text"},
-                password: {label: "password", type: "password"}
+                identifier: { label: "identifier", type: "text" },
+                password: { label: "password", type: "password" }
             },
             async authorize(
                 credentials: Record<"identifier" | "password", string> | undefined
-            ) : Promise<IUserExtended | null> {
+            ): Promise<IUserExtended | null> {
                 const { identifier, password } = credentials as {
                     identifier: string;
                     password: string;
-                }
+                };
 
                 const resultToken = await authServices.login({
                     identifier,
                     password
-                })
+                });
 
                 const accessToken = resultToken.data.data;
 
@@ -37,7 +37,7 @@ export default NextAuth({
                 const user = me.data.data;
 
                 if (
-                    accessToken && 
+                    accessToken &&
                     resultToken.status === 200 &&
                     user._id &&
                     me.status === 200
@@ -51,23 +51,25 @@ export default NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ 
-            token, user 
-        } : { 
-            token: IJWTExtended; 
-            user: IUserExtended | null; 
+        async jwt({
+            token,
+            user
+        }: {
+            token: IJWTExtended;
+            user: IUserExtended | null;
         }) {
-            if(user) {
+            if (user) {
                 token.user = user;
             }
 
             return token;
         },
         async session({
-            session, token
-        }:{
+            session,
+            token
+        }: {
             session: ISessionExtended;
-            token: IJWTExtended
+            token: IJWTExtended;
         }) {
             session.user = token.user;
             session.accessToken = token.user?.accessToken;
@@ -75,3 +77,5 @@ export default NextAuth({
         }
     }
 });
+
+export { handler as GET, handler as POST };
