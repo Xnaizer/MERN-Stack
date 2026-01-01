@@ -25,7 +25,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${cn(
         inter.className,
-        "flex min-h-screen min-w-full flex-col items-center justify-center gap-10 py-10 lg:py-0"
       )} antialiased`}>
         <Providers>{children}</Providers>
       </body>
