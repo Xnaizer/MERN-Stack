@@ -14,13 +14,15 @@ export default function DashboardLayout ({
     children, type
 }: DashboardLayoutProps) {
 
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(() => {
+        if (typeof window === "undefined") return false;
+        const stored = window.localStorage.getItem("sidebar");
+        return stored === "true";
+    });
 
     useEffect(() => {
-        const stored = localStorage.getItem("sidebar");
-        if (stored !== null) {
-            setIsOpen(stored === "true");
-        }
+        const stored = window.localStorage.getItem("sidebar");
+        if (stored !== null) setIsOpen(stored === "true");
     }, []);
 
     const handleIsOpen = () => {

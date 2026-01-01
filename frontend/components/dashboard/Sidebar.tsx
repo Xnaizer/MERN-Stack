@@ -8,6 +8,7 @@ import { type JSX } from "react";
 import { CiLogout } from "react-icons/ci";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useMediaQuery } from "../useMediaQuery";
+import Link from "next/link";
 
 interface SidebarItem {
     key: string;
@@ -57,12 +58,13 @@ const DashboardSidebar = (props: PropTypes) => {
                             <ListboxItem 
                                 key={items.key} 
                                 href={items.href}
+                                as={Link}
                                 startContent={items.icon}
                                 classNames={{ 
                                     base: cn("my-1 h-8 md:h-10 lg:h-12 items-center justify-center flex text-lg lg:text-2xl", { "bg-danger-500 text-white": pathname === items.href }), 
                                     title: !isOpen ? "block text-xs lg:text-lg" : "hidden" 
                                 }}
-                                textValue={isOpen ? items.label : ""}
+                                textValue={items.label}
                                 aria-labelledby={items.label}
                             >
                                 {!isOpen ? items.label : null}
