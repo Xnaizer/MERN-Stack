@@ -5,7 +5,7 @@ import { getToken } from "next-auth/jwt";
 import { redirect } from "next/dist/server/api-utils";
 
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const token: IJWTExtended | null = await getToken({
         req: request,
         secret: environment.AUTH_SECRET,
