@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import AdminClient from "./client";
+import MemberClient from "./client";
 import DashboardLayout from "@/components/dashboard/layout";
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "Dashboard Admin",
+  description: "Dashboard Member",
 };
 
-export default function AdminPage() {
+export default function MemberPage() {
   return (
-    <DashboardLayout type="admin">
-        <AdminClient />
+    <DashboardLayout type="member">
+      <MemberClient />
     </DashboardLayout>
-    );
+  );
 }

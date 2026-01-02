@@ -61,7 +61,7 @@ const DashboardSidebar = (props: PropTypes) => {
                                 as={Link}
                                 startContent={items.icon}
                                 classNames={{ 
-                                    base: cn("my-1 h-8 md:h-10 lg:h-12 items-center justify-center flex text-lg lg:text-2xl", { "bg-danger-500 text-white": pathname === items.href }), 
+                                    base: cn("my-1 h-8 md:h-10 lg:h-12 items-center justify-center flex text-lg lg:text-2xl", { "bg-danger-500 text-white": pathname.startsWith(items.href) }), 
                                     title: !isOpen ? "block text-xs lg:text-lg" : "hidden" 
                                 }}
                                 textValue={items.label}
