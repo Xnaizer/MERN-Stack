@@ -3,18 +3,8 @@ import { encrypt } from "../utils/encryption";
 import {renderMailHtml, sendEmail} from '../utils/mail/mail'
 import { CLIENT_HOST, EMAIL_SMTP_USER } from "../utils/env";
 import { ROLES } from "../utils/constant";
+import { IUser } from "../utils/interfaces";
 
-export interface IUser {
-    fullName: string;
-    username: string;
-    email: string;
-    password: string;
-    role: string;
-    profilePicture: string;
-    isActive: boolean;
-    activationCode: string;
-    createdAt?: string;
-}
 
 const Schema = mongoose.Schema;
 

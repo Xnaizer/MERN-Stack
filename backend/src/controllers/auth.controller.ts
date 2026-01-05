@@ -4,21 +4,9 @@ import * as Yup from 'yup';
 import UserModel from '../models/user.model';
 import { encrypt } from '../utils/encryption';
 import { generateToken } from '../utils/jwt';
-import { IReqUser } from '../middlewares/auth.middleware';
+import { TLogin, TRegister } from '../utils/types';
+import { IReqUser } from '../utils/interfaces';
 
-
-type TRegister = {
-    fullName: string;
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
-
-type TLogin = {
-    identifier: string;
-    password: string;
-}
 
 const registerValidateSchema = Yup.object({
     fullName: Yup.string().required(),
