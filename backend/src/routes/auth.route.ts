@@ -1,21 +1,11 @@
-import express, { Request, Response } from 'express';
-
-// import authentications
+import express from 'express';
 import authController from '../controllers/auth.controller';
 import authMiddleware from '../middlewares/auth.middleware';
 
-import aclMiddleware from '../middlewares/acl.middleware';
-
-import dummyController from '../controllers/dummy.controller';
-import { ROLES } from '../utils/constant';
-import mediaMiddleware from '../middlewares/media.middleware';
-import mediaController from '../controllers/media.controller';
-
-
-const router = express.Router();
+const authRouter = express.Router();
 
 // authentications controller
-router.post('/auth/register', authController.register);
+authRouter.post('/register', authController.register);
 /**
  * @openapi
  * /auth/register:
@@ -40,7 +30,7 @@ router.post('/auth/register', authController.register);
  *         description: Bad request - Validation error
  */
 
-router.post('/auth/login', authController.login);
+authRouter.post('/login', authController.login);
 /**
  * @openapi
  * /auth/login:
@@ -65,7 +55,7 @@ router.post('/auth/login', authController.login);
  *         description: Invalid credentials
  */
 
-router.get("/auth/me", authMiddleware, authController.me);
+authRouter.get("/me", authMiddleware, authController.me);
 /**
  * @openapi
  * /auth/me:
@@ -111,7 +101,7 @@ router.get("/auth/me", authMiddleware, authController.me);
  *         description: Unauthorized - Missing or invalid token
  */
 
-router.post("/auth/activation", authController.activation)
+authRouter.post("/activation", authController.activation)
 /**
  * @openapi
  * /auth/activation:
@@ -137,53 +127,4 @@ router.post("/auth/activation", authController.activation)
  *         description: Unauthorized - Invalid activation code
  */
 
-
-// test acl
-router.get(
-    '/test-acl', 
-    [
-        authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])
-    ], 
-    (req: Request, res: Response) => {
-        res.status(200).json({
-            status: 'success',
-            message: 'HIT OK',
-            data: 'Success HIT'
-        })
-    }
-)
-
-// media
-router.post(
-    "/media/upload-single",
-    [
-        authMiddleware, 
-        aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]), 
-        mediaMiddleware.single('file')
-    ],
-    mediaController.single
-);
-
-router.post(
-    "/media/upload-multiple",
-    [
-        authMiddleware,
-        aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]),
-        mediaMiddleware.multiple('files')
-    ],
-    mediaController.multiple
-);
-
-router.delete(
-    "/media/remove-media",
-    [
-        authMiddleware,
-        aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])
-    ],
-    mediaController.remove
-)
-
-// dummy controller
-router.get('/dummy', dummyController.dummy);
-
-export default router;
+export default authRouter;
