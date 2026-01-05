@@ -8,6 +8,8 @@ import aclMiddleware from '../middlewares/acl.middleware';
 
 import dummyController from '../controllers/dummy.controller';
 import { ROLES } from '../utils/constant';
+import mediaMiddleware from '../middlewares/media.middleware';
+import mediaController from '../controllers/media.controller';
 
 
 const router = express.Router();
@@ -151,6 +153,35 @@ router.get(
     }
 )
 
+// media
+router.post(
+    "/media/upload-single",
+    [
+        authMiddleware, 
+        aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]), 
+        mediaMiddleware.single('file')
+    ],
+    mediaController.single
+);
+
+router.post(
+    "/media/upload-multiple",
+    [
+        authMiddleware,
+        aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]),
+        mediaMiddleware.multiple('files')
+    ],
+    mediaController.multiple
+);
+
+router.delete(
+    "/media/remove-media",
+    [
+        authMiddleware,
+        aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])
+    ],
+    mediaController.remove
+)
 
 // dummy controller
 router.get('/dummy', dummyController.dummy);
