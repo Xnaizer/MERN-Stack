@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { getUserData } from "../utils/jwt";
-import { IReqUser, IUserToken } from "../utils/interfaces";
+import { IReqUser } from "../utils/interfaces";
 
 
 

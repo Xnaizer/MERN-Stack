@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { IJWTExtended } from "./types/Auth";
 import environment from "./config/environment";
 import { getToken } from "next-auth/jwt";
-import { redirect } from "next/dist/server/api-utils";
 
 
 export async function proxy(request: NextRequest) {
