@@ -1,50 +1,47 @@
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
 import path from 'path';
-import { EMAIL_SMTP_HOST, EMAIL_SMTP_PASS, EMAIL_SMTP_PORT, EMAIL_SMTP_SECURE, EMAIL_SMTP_SERVICE_NAME, EMAIL_SMTP_USER } from '../env';
+import {
+  EMAIL_SMTP_HOST,
+  EMAIL_SMTP_PASS,
+  EMAIL_SMTP_PORT,
+  EMAIL_SMTP_SECURE,
+  EMAIL_SMTP_SERVICE_NAME,
+  EMAIL_SMTP_USER,
+} from '../env';
 
 const transporter = nodemailer.createTransport({
-    service: EMAIL_SMTP_SERVICE_NAME,
-    host: EMAIL_SMTP_HOST,
-    port: EMAIL_SMTP_PORT,
-    secure: EMAIL_SMTP_SECURE,
-    auth: {
-        user: EMAIL_SMTP_USER,
-        pass: EMAIL_SMTP_PASS 
-    },
-    requireTLS: true
+  service: EMAIL_SMTP_SERVICE_NAME,
+  host: EMAIL_SMTP_HOST,
+  port: EMAIL_SMTP_PORT,
+  secure: EMAIL_SMTP_SECURE,
+  auth: {
+    user: EMAIL_SMTP_USER,
+    pass: EMAIL_SMTP_PASS,
+  },
+  requireTLS: true,
 });
 
 export interface ISendEmail {
-    from: string;
-    to: string;
-    subject: string;
-    content: string;
+  from: string;
+  to: string;
+  subject: string;
+  content: string;
 }
 
-export const sendEmail = async ({
-    
+export const sendEmail = async ({ from, to, subject, content }: ISendEmail) => {
+  const result = await transporter.sendMail({
     from,
     to,
     subject,
-    content
-}: ISendEmail) => {
-    const result = await transporter.sendMail({
-        from,
-        to,
-        subject,
-        html: content
-    });
+    html: content,
+  });
 
-    return result;
-}
+  return result;
+};
 
 export const renderMailHtml = async (template: string, data: any): Promise<string> => {
-    const content = await ejs.renderFile(
-        path.join(__dirname, `templates/${template}`),
-        data
-    );
+  const content = await ejs.renderFile(path.join(__dirname, `templates/${template}`), data);
 
-    return content as string;
-}
-
+  return content as string;
+};

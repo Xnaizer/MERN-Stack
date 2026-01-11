@@ -1,9 +1,24 @@
-import js from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import eslintPluginPrettier from 'eslint-plugin-prettier'
-import prettier from 'eslint-config-prettier'
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
+import prettier from 'eslint-config-prettier';
+import globals from 'globals';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default [
+  {
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'build/**'],
+  },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -11,7 +26,8 @@ export default [
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './tsconfig.eslint.json',
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
         sourceType: 'module',
       },
     },
@@ -19,7 +35,14 @@ export default [
       prettier: eslintPluginPrettier,
     },
     rules: {
-      'no-unused-vars': 'error',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
       'no-undef': 'off',
       'prefer-const': 'error',
       'no-console': 'warn',
@@ -37,7 +60,4 @@ export default [
     },
   },
   prettier,
-  {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
-  },
-]
+];

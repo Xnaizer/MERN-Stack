@@ -1,48 +1,48 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "./env";
+import { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from './env';
 
 cloudinary.config({
-    cloud_name: CLOUDINARY_NAME,
-    api_key: CLOUDINARY_API_KEY,
-    api_secret: CLOUDINARY_API_SECRET
+  cloud_name: CLOUDINARY_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
 });
 
 const toDataURL = (file: Express.Multer.File) => {
-    const b64 = Buffer.from(file.buffer).toString("base64");
-    const dataURL = `data:${file.mimetype};base64,${b64}`;
-    return dataURL;
-}
+  const b64 = Buffer.from(file.buffer).toString('base64');
+  const dataURL = `data:${file.mimetype};base64,${b64}`;
+  return dataURL;
+};
 
 const getPublicIdFromFileUrl = (fileUrl: string) => {
-    const fileNameUsingSubstring = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-    const publicId = fileNameUsingSubstring.substring(0, fileNameUsingSubstring.lastIndexOf('.'))
+  const fileNameUsingSubstring = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+  const publicId = fileNameUsingSubstring.substring(0, fileNameUsingSubstring.lastIndexOf('.'));
 
-    return publicId;
-}
+  return publicId;
+};
 
 export default {
-    async uploadSingle(file: Express.Multer.File) {
-        const fileDataURL = toDataURL(file);
-        const result = await cloudinary.uploader.upload(fileDataURL, {
-            resource_type: "auto"
-        });
+  async uploadSingle(file: Express.Multer.File) {
+    const fileDataURL = toDataURL(file);
+    const result = await cloudinary.uploader.upload(fileDataURL, {
+      resource_type: 'auto',
+    });
 
-        return result;
-    },
+    return result;
+  },
 
-    async uploadMultiple(files: Express.Multer.File[]) {
-        const uploadBatch = files.map((item) => {
-            const result = this.uploadSingle(item);
-            return result;
-        });
+  async uploadMultiple(files: Express.Multer.File[]) {
+    const uploadBatch = files.map((item) => {
+      const result = this.uploadSingle(item);
+      return result;
+    });
 
-        const results = await Promise.all(uploadBatch);
-        return results;
-    },
+    const results = await Promise.all(uploadBatch);
+    return results;
+  },
 
-    async removeMedia(fileUrl: string) {
-        const publicId = getPublicIdFromFileUrl(fileUrl);
-        const result = await cloudinary.uploader.destroy(publicId);
-        return result;
-    }
-}
+  async removeMedia(fileUrl: string) {
+    const publicId = getPublicIdFromFileUrl(fileUrl);
+    const result = await cloudinary.uploader.destroy(publicId);
+    return result;
+  },
+};

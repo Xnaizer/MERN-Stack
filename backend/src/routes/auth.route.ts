@@ -55,7 +55,7 @@ authRouter.post('/login', authController.login);
  *         description: Invalid credentials
  */
 
-authRouter.get("/me", authMiddleware, authController.me);
+authRouter.get('/me', authMiddleware, authController.me);
 /**
  * @openapi
  * /auth/me:
@@ -101,7 +101,7 @@ authRouter.get("/me", authMiddleware, authController.me);
  *         description: Unauthorized - Missing or invalid token
  */
 
-authRouter.post("/activation", authController.activation)
+authRouter.post('/activation', authController.activation);
 /**
  * @openapi
  * /auth/activation:

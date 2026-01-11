@@ -1,41 +1,39 @@
-import type { NextFunction, Request, Response } from "express";
-import { getUserData } from "../utils/jwt";
-import { IReqUser } from "../utils/interfaces";
-
-
+import type { NextFunction, Request, Response } from 'express';
+import { getUserData } from '../utils/jwt';
+import { IReqUser } from '../utils/interfaces';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-    const authorization = req.headers?.authorization;
+  const authorization = req.headers?.authorization;
 
-    if(!authorization) {
-        return res.status(403).json({
-            status: 'failed',
-            message: 'unauthorized',
-            data: null
-        })
-    }
+  if (!authorization) {
+    return res.status(403).json({
+      status: 'failed',
+      message: 'unauthorized',
+      data: null,
+    });
+  }
 
-    const [prefix, accessToken] = authorization.split(" ");
+  const [prefix, accessToken] = authorization.split(' ');
 
-    if(!(prefix === "Bearer" && accessToken)) {
-        return res.status(403).json({
-            status: 'failed',
-            message: 'unauthorized',
-            data: null
-        })
-    }
+  if (!(prefix === 'Bearer' && accessToken)) {
+    return res.status(403).json({
+      status: 'failed',
+      message: 'unauthorized',
+      data: null,
+    });
+  }
 
-    const user = getUserData(accessToken);
+  const user = getUserData(accessToken);
 
-    if(!user) {
-        return res.status(403).json({
-            status: 'failed',
-            message: 'unauthorized',
-            data: null
-        })
-    }
+  if (!user) {
+    return res.status(403).json({
+      status: 'failed',
+      message: 'unauthorized',
+      data: null,
+    });
+  }
 
-    (req as IReqUser).user = user;
+  (req as IReqUser).user = user;
 
-    next();
-}
+  next();
+};
