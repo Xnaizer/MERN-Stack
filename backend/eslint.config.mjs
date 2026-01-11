@@ -48,7 +48,7 @@ export default [
       'no-console': 'off',
       'no-debugger': 'warn',
       'prettier/prettier': [
-        'error',
+        'off',
         {
           singleQuote: true,
           semi: true,
