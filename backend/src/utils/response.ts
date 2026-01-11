@@ -30,6 +30,15 @@ export default {
       data: null,
     });
   },
+  notFound(res: Response, message: string = 'Not found') {
+    return res.status(404).json({
+      meta: {
+        status: 404,
+        message,
+      },
+      data: null,
+    });
+  },
   unauthenticated(res: Response, message: string = 'unauthenticated') {
     res.status(401).json({
       meta: {

@@ -105,6 +105,10 @@ export default {
 
       const result = await UserModel.findById(user?.id);
 
+      if (!result) {
+        return response.notFound(res, 'User not found');
+      }
+
       response.success(res, result, 'Success get user profile');
     } catch (error) {
       response.error(res, error, 'Failed get user info');
@@ -113,23 +117,26 @@ export default {
 
   async activation(req: Request, res: Response) {
     try {
-      const { code } = req.body as { code: string };
+        const { code } = req.body as { code: string };
 
-      if (!code) {
-        return response.unauthorized(res, 'Activation code is required');
-      }
+        if (!code) {
+            return response.unauthorized(res, 'Activation code is required');
+        }
 
-      const user = await UserModel.findOneAndUpdate(
-        { activationCode: code },
-        { isActive: true },
-        { new: true },
-      );
+        const user = await UserModel.findOne({ activationCode: code });
 
-      if (!user) {
-        return response.unauthorized(res, 'Invalid activation code');
-      }
+        if (!user) {
+            return response.unauthorized(res, 'Invalid activation code');
+        }
 
-      return response.success(res, user, 'User successfully activated');
+        if (user.isActive) {
+            return response.error(res, null, 'User already active');
+        }
+
+        user.isActive = true;
+        await user.save();
+
+        response.success(res, user, 'User successfully activated');
     } catch (error) {
       response.error(res, error, 'Activation failed');
     }

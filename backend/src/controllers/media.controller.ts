@@ -36,7 +36,15 @@ export default {
     try {
       const { fileUrl } = req.body as { fileUrl: string };
 
+      if (!fileUrl) {
+        return response.error(res, null, 'File URL is required');
+      }
+
       const result = await uploader.removeMedia(fileUrl);
+
+      if (result?.result === 'not found') {
+        return response.notFound(res, 'File not found');
+      }
 
       response.success(res, result, 'Success remove file');
     } catch {
