@@ -14,15 +14,15 @@ export type TCategory = Yup.InferType<typeof categoryDAO>;
 const CategorySchema = new Schema<TCategory>(
   {
     name: {
-      types: Schema.Types.String,
+      type: Schema.Types.String,
       required: true,
     },
     description: {
-      types: Schema.Types.String,
+      type: Schema.Types.String,
       required: true,
     },
     icon: {
-      types: Schema.Types.String,
+      type: Schema.Types.String,
       required: true,
     },
   },
