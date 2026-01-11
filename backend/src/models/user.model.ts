@@ -49,37 +49,43 @@ const UserSchema = new Schema<IUser>(
   },
 );
 
-UserSchema.pre('save', function (next) {
-  this.password = encrypt(this.password);
-  this.activationCode = encrypt(this.id);
-
-  next();
+UserSchema.pre('save', async function (next) {
+  try {
+    this.password = await encrypt(this.password);
+    this.activationCode = await encrypt(this.id);
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
 });
 
-UserSchema.post('save', async function (doc, next) {
-  try {
-    const user = doc;
-    console.log('Send email to:', user.email);
+UserSchema.post('save', function (doc, next) {
+  const user = doc;
 
-    const contentMail = await renderMailHtml('registration-success.ejs', {
-      username: user.username,
-      fullName: user.fullName,
-      email: user.email,
-      createdAt: user.createdAt,
-      activationLink: `${CLIENT_HOST}/auth/activation?code=${user.activationCode}`,
-    });
+  setImmediate(async () => {
+    try {
+      console.log('Send email to:', user.email);
 
-    await sendEmail({
-      from: EMAIL_SMTP_USER,
-      to: user.email,
-      subject: 'Aktivasi Akun Anda',
-      content: contentMail,
-    });
-  } catch (error) {
-    console.log(error);
-  } finally {
-    next();
-  }
+      const contentMail = await renderMailHtml('registration-success.ejs', {
+        username: user.username,
+        fullName: user.fullName,
+        email: user.email,
+        createdAt: user.createdAt,
+        activationLink: `${CLIENT_HOST}/auth/activation?code=${user.activationCode}`,
+      });
+
+      await sendEmail({
+        from: EMAIL_SMTP_USER,
+        to: user.email,
+        subject: 'Aktivasi Akun Anda',
+        content: contentMail,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  next();
 });
 
 UserSchema.methods.toJSON = function () {

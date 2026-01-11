@@ -82,7 +82,7 @@ export default {
         return response.unauthorized(res, 'Complete your account activation on your email!');
       }
 
-      const validatePassword: boolean = encrypt(password) === userByIdentifier.password;
+      const validatePassword: boolean = (await encrypt(password)) === userByIdentifier.password;
 
       if (!validatePassword) {
         return response.unauthorized(res, 'Incorrect password');

@@ -1,8 +1,11 @@
 import crypto from 'crypto';
+import { promisify } from 'util';
 import { SECRET_KEY } from './env';
 
-export const encrypt = (password: string): string => {
-  const encrypted = crypto.pbkdf2Sync(password, SECRET_KEY, 1000, 64, 'sha512').toString('hex');
+const pbkdf2Async = promisify(crypto.pbkdf2);
 
-  return encrypted;
+export const encrypt = async (password: string): Promise<string> => {
+  const encrypted = await pbkdf2Async(password, SECRET_KEY, 1000, 64, 'sha512');
+
+  return encrypted.toString('hex');
 };

@@ -5,9 +5,8 @@ dotenv.config();
 export const DATABASE_URL: string = process.env.DATABASE_URL as unknown as string;
 export const SECRET_KEY: string = process.env.SECRET_KEY as unknown as string;
 
-export const EMAIL_SMTP_SECURE: boolean = Boolean(
-  process.env.EMAIL_SMTP_SECURE,
-) as unknown as boolean;
+export const EMAIL_SMTP_SECURE: boolean =
+  String(process.env.EMAIL_SMTP_SECURE).toLowerCase() === 'true';
 export const EMAIL_SMTP_USER: string = process.env.EMAIL_SMTP_USER as unknown as string;
 export const EMAIL_SMTP_PASS: string = process.env.EMAIL_SMTP_PASS as unknown as string;
 export const EMAIL_SMTP_PORT: number = Number(process.env.EMAIL_SMTP_PORT) as unknown as number;

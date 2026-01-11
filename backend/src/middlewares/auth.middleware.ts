@@ -16,13 +16,17 @@ export default (req: Request, res: Response, next: NextFunction) => {
     return response.unauthenticated(res);
   }
 
-  const user = getUserData(accessToken);
+  try {
+    const user = getUserData(accessToken);
 
-  if (!user) {
+    if (!user) {
+      return response.unauthenticated(res);
+    }
+
+    (req as IReqUser).user = user;
+
+    next();
+  } catch {
     return response.unauthenticated(res);
   }
-
-  (req as IReqUser).user = user;
-
-  next();
 };

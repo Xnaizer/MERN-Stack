@@ -22,6 +22,13 @@ export default {
         data: error.errors,
       });
     }
+    return res.status(400).json({
+      meta: {
+        status: 400,
+        message,
+      },
+      data: null,
+    });
   },
   unauthenticated(res: Response, message: string = 'unauthenticated') {
     res.status(401).json({
