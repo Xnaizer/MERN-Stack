@@ -34,7 +34,7 @@ async function init() {
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}/api`);
     });
-
+    
   } catch (error) {
     console.log(error);
   }
