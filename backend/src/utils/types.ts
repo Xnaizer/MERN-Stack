@@ -11,9 +11,8 @@ export type TLogin = {
   password: string;
 };
 
-
 export type TPagination = {
-    totalPages: number;
-    current: number;
-    totalData: number;
-}
+  totalPages: number;
+  current: number;
+  totalData: number;
+};

@@ -45,7 +45,7 @@ export default [
       ],
       'no-undef': 'off',
       'prefer-const': 'error',
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-debugger': 'warn',
       'prettier/prettier': [
         'error',

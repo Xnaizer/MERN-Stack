@@ -6,6 +6,7 @@ import { encrypt } from '../utils/encryption';
 import { generateToken } from '../utils/jwt';
 import { TLogin, TRegister } from '../utils/types';
 import { IReqUser } from '../utils/interfaces';
+import response from '../utils/response';
 
 const registerValidateSchema = Yup.object({
   fullName: Yup.string().required(),
@@ -52,19 +53,9 @@ export default {
         password,
       });
 
-      res.status(200).json({
-        status: 'Success',
-        message: 'Registration Success',
-        data: result,
-      });
+      response.success(res, result, 'Registration Success');
     } catch (error) {
-      const err = error as unknown as Error;
-
-      res.status(400).json({
-        status: 'Failed',
-        message: err.message,
-        data: null,
-      });
+      response.error(res, error, 'Failed registration');
     }
   },
 
@@ -84,29 +75,17 @@ export default {
       });
 
       if (!userByIdentifier) {
-        return res.status(403).json({
-          status: 'failed',
-          message: 'User Not Found!',
-          data: null,
-        });
+        return response.unauthorized(res, 'User Not Found!');
       }
 
       if (!userByIdentifier.isActive) {
-        return res.status(403).json({
-          status: 'failed',
-          message: 'Complete your account activation on your email!',
-          data: null,
-        });
+        return response.unauthorized(res, 'Complete your account activation on your email!');
       }
 
       const validatePassword: boolean = encrypt(password) === userByIdentifier.password;
 
       if (!validatePassword) {
-        return res.status(403).json({
-          status: 'failed',
-          message: 'incorrect password',
-          data: null,
-        });
+        return response.unauthorized(res, 'Incorrect password');
       }
 
       const token = generateToken({
@@ -114,18 +93,9 @@ export default {
         role: userByIdentifier.role,
       });
 
-      res.status(200).json({
-        status: 'success',
-        message: 'login success',
-        data: token,
-      });
+      response.success(res, token, 'Login success');
     } catch (error) {
-      const err = error as unknown as Error;
-      res.status(400).json({
-        status: 'Failed',
-        message: err.message,
-        data: null,
-      });
+      response.error(res, error, 'Login failed');
     }
   },
 
@@ -135,18 +105,9 @@ export default {
 
       const result = await UserModel.findById(user?.id);
 
-      res.status(200).json({
-        status: 'success',
-        message: 'success get user profile',
-        data: result,
-      });
+      response.success(res, result, 'Success get user profile');
     } catch (error) {
-      const err = error as unknown as Error;
-      res.status(400).json({
-        status: 'failed',
-        message: err.message,
-        data: null,
-      });
+      response.error(res, error, 'Failed get user info');
     }
   },
 
@@ -155,11 +116,7 @@ export default {
       const { code } = req.body as { code: string };
 
       if (!code) {
-        return res.status(400).json({
-          status: 'failed',
-          message: 'activation code is required',
-          data: null,
-        });
+        return response.unauthorized(res, 'Activation code is required');
       }
 
       const user = await UserModel.findOneAndUpdate(
@@ -169,26 +126,12 @@ export default {
       );
 
       if (!user) {
-        return res.status(403).json({
-          status: 'failed',
-          message: 'invalid activation code',
-          data: null,
-        });
+        return response.unauthorized(res, 'Invalid activation code');
       }
 
-      return res.status(200).json({
-        status: 'success',
-        message: 'user successfully activated',
-        data: user,
-      });
+      return response.success(res, user, 'User successfully activated');
     } catch (error) {
-      const err = error as unknown as Error;
-
-      res.status(400).json({
-        status: 'failed',
-        message: err.message,
-        data: null,
-      });
+      response.error(res, error, 'Activation failed');
     }
   },
 };

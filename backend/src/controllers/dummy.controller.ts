@@ -1,11 +1,8 @@
 import type { Request, Response } from 'express';
+import response from '../utils/response';
 
 export default {
   dummy(req: Request, res: Response) {
-    res.status(200).json({
-      status: 'Success',
-      message: 'Success hit dummy API!',
-      data: 'OK',
-    });
+    response.success(res, 'OK!', 'Success hit dummy API!');
   },
 };

@@ -3,6 +3,7 @@ import dummyController from '../controllers/dummy.controller';
 import authMiddleware from '../middlewares/auth.middleware';
 import aclMiddleware from '../middlewares/acl.middleware';
 import { ROLES } from '../utils/constant';
+import response from '../utils/response';
 
 const testRouter = express.Router();
 
@@ -11,11 +12,7 @@ testRouter.get(
   '/test-acl',
   [authMiddleware, aclMiddleware([ROLES.ADMIN, ROLES.MEMBER])],
   (req: Request, res: Response) => {
-    res.status(200).json({
-      status: 'success',
-      message: 'HIT OK',
-      data: 'Success HIT',
-    });
+    response.success(res, 'OK!', 'Success HIT!');
   },
 );
 
