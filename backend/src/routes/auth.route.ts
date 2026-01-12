@@ -13,6 +13,7 @@ authRouter.post('/register', authController.register);
  *     tags:
  *       - Auth
  *     summary: Register a new user
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -25,9 +26,13 @@ authRouter.post('/register', authController.register);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CreateUserResponse'
+ *               $ref: '#/components/schemas/AuthRegisterResponse'
  *       400:
  *         description: Bad request - Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
  */
 
 authRouter.post('/login', authController.login);
@@ -38,6 +43,7 @@ authRouter.post('/login', authController.login);
  *     tags:
  *       - Auth
  *     summary: Login user and get access token
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -50,9 +56,19 @@ authRouter.post('/login', authController.login);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/LoginResponse'
+ *               $ref: '#/components/schemas/AuthLoginResponse'
+ *       400:
+ *         description: Bad request - Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
  *       403:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
  */
 
 authRouter.get('/me', authMiddleware, authController.me);
@@ -71,34 +87,13 @@ authRouter.get('/me', authMiddleware, authController.me);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: success
- *                 message:
- *                   type: string
- *                   example: Success Get User Profile!
- *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: 6719d2b3a0b5f4a1ef43b8a2
- *                     fullName:
- *                       type: string
- *                       example: John Doe
- *                     username:
- *                       type: string
- *                       example: johndoe123
- *                     email:
- *                       type: string
- *                       example: john.doe@gmail.com
- *                     role:
- *                       type: string
- *                       example: user
- *       403:
+ *               $ref: '#/components/schemas/AuthMeResponse'
+ *       401:
  *         description: Unauthorized - Missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
  */
 
 authRouter.post('/activation', authController.activation);
@@ -110,6 +105,7 @@ authRouter.post('/activation', authController.activation);
  *       - Auth
  *     summary: Activate a user account
  *     description: Activate user account using activation code sent via email.
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -122,9 +118,19 @@ authRouter.post('/activation', authController.activation);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ActivationResponse'
+ *               $ref: '#/components/schemas/AuthActivationResponse'
+ *       400:
+ *         description: Bad request - Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
  *       403:
  *         description: Unauthorized - Invalid activation code
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiErrorResponse'
  */
 
 export default authRouter;
