@@ -21,7 +21,7 @@ export const eventDAO = Yup.object({
     location: Yup.object().required()
 })
 
-type TEvent = Yup.InferType<typeof eventDAO>
+export type TEvent = Yup.InferType<typeof eventDAO>
 
 export interface IEvent extends Omit<TEvent, 'category' | 'createdBy'> {
     category: ObjectId;

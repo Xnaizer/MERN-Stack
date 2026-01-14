@@ -99,7 +99,9 @@ export default {
     try {
         const { id } = req.params;
 
-        const result = await CategoryModel.findByIdAndDelete(id);
+        const result = await CategoryModel.findByIdAndDelete(id, {
+            new: true
+        });
 
         if (!result) {
             return response.notFound(res, 'Category not found');
