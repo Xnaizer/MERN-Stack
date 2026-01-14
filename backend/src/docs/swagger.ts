@@ -4,6 +4,8 @@ import path from 'path';
 import authDocsSchema from './auth.schema';
 import mediaDocsSchema from './media.schema';
 import categoryDocsSchema from './category.schema';
+import eventDocsSchema from './event.schema';
+import regionDocsSchema from './region.schema';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -42,6 +44,8 @@ const doc: swaggerJSDoc.Options = {
         ...authDocsSchema,
         ...mediaDocsSchema,
         ...categoryDocsSchema,
+        ...eventDocsSchema,
+        ...regionDocsSchema,
       },
     },
     security: [

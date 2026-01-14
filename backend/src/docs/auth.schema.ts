@@ -13,6 +13,8 @@ const authDocsSchema = {
       data: {
         oneOf: [
           { type: 'array', items: { type: 'string' } },
+          { type: 'object', additionalProperties: true },
+          { type: 'string' },
           { type: 'null' },
         ],
         example: null,
