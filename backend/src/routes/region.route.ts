@@ -1,13 +1,13 @@
 import express from 'express';
 import regionController from '../controllers/region.controller';
 
-const regionRoute = express.Router();
+const regionRouter = express.Router();
 
-regionRoute.get('/regions', regionController.getAllProvinces);
-regionRoute.get('/regions/:id/province', regionController.getProvince);
-regionRoute.get('/regions/:id/regency', regionController.getRegency);
-regionRoute.get('/regions/:id/district', regionController.getDistrict);
-regionRoute.get('/regions/:id/village', regionController.getVillage);
-regionRoute.get('/regions-search', regionController.findByCity);
+regionRouter.get('/regions', regionController.getAllProvinces);
+regionRouter.get('/regions/:id/province', regionController.getProvince);
+regionRouter.get('/regions/:id/regency', regionController.getRegency);
+regionRouter.get('/regions/:id/district', regionController.getDistrict);
+regionRouter.get('/regions/:id/village', regionController.getVillage);
+regionRouter.get('/regions-search', regionController.findByCity);
 
-export default regionRoute;
+export default regionRouter;
