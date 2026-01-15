@@ -36,7 +36,7 @@ const ActivationClient = (props: PropTypes) => {
                 <p className="text-xl font-bold text-default-500">
                     {status === 'success' ? "Thank you for register account in MERN Stack" : "Confirmation Code Invalid"}
                 </p>
-                <Button className="mt-4 w-fit" variant="bordered" color="danger" onClick={() => router.push("/")}>
+                <Button className="mt-4 w-fit" variant="bordered" color="danger" onPress={() => router.push("/")}>
                     Back To Home
                 </Button>
             </div>
