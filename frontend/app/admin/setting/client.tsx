@@ -1,10 +1,10 @@
 
-const SettingsClient: React.FC = () => {
+const SettingClient: React.FC = () => {
     return (
         <div>
-            <p>Settings client</p>
+            <p>Setting client</p>
         </div>
     )
 }
 
-export default SettingsClient;
+export default SettingClient;
