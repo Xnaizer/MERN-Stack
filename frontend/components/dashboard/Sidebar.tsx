@@ -1,6 +1,6 @@
 'use client'
 import { cn } from "@/utils/cn";
-import { Button, Listbox, ListboxItem } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -50,27 +50,43 @@ const DashboardSidebar = (props: PropTypes) => {
                     />
 
                 </div>
-                    <Listbox 
-                        variant="solid"
-                        aria-label="Dashboard Menu" 
-                    >
-                        {sidebarItems.map((items) => (
-                            <ListboxItem 
-                                key={items.key} 
+                    <ul aria-label="Dashboard Menu">
+                        {sidebarItems.map((items) => {
+
+                            if(items.href === '/member') {
+                                items.href = '/member/dashboard'
+                            }
+
+                            if(items.href === '/admin') {
+                                items.href = '/admin/dashboard'
+                            }
+
+                            const isActive = pathname === items.href;
+                            console.log(isActive)
+
+                            return (
+                            <li key={items.key} className="my-4">
+                                <Link
                                 href={items.href}
-                                as={Link}
-                                startContent={items.icon}
-                                classNames={{ 
-                                    base: cn("my-1 h-8 md:h-10 lg:h-12 items-center justify-center flex text-lg lg:text-2xl", { "bg-danger-500 text-white": pathname.startsWith(items.href) }), 
-                                    title: !isOpen ? "block text-xs lg:text-lg" : "hidden" 
-                                }}
-                                textValue={items.label}
-                                aria-labelledby={items.label}
-                            >
-                                {!isOpen ? items.label : null}
-                            </ListboxItem>
-                        ))}
-                    </Listbox>
+                                className={cn(
+                                    `h-10 md:h-12 lg:h-14 flex items-center ${isOpen ? "justify-center": "justify-start"} px-2 gap-4 text-lg lg:text-2xl rounded-md `,
+                                    {
+                                    "bg-danger-500 text-white": isActive,
+                                    }
+                                )}
+                                aria-label={items.label}
+                                >
+                                {items.icon}
+                                {!isOpen && (
+                                    <span className="text-xs lg:text-lg">
+                                    {items.label}
+                                    </span>
+                                )}
+                                </Link>
+                            </li>
+                            );
+                        })}
+                    </ul>
             </div>
 
             <div className="flex flex-col gap-4 items-center p-1">
@@ -82,7 +98,7 @@ const DashboardSidebar = (props: PropTypes) => {
                         isOpen ? "justify-center px-0 w-8 lg:w-14 min-w-10" : "justify-start px-2"
                     }`}
                     size={isLg ? "lg" : "sm"}
-                    onClick={onOpen}
+                    onPress={onOpen}
                 >
                 {!isOpen ? (
                     <FiChevronLeft />
@@ -100,7 +116,7 @@ const DashboardSidebar = (props: PropTypes) => {
                         isOpen ? "justify-center px-0 w-8 lg:w-14 min-w-10" : "justify-start px-2"
                     }`}
                     size={isLg ? "lg" : "sm"}
-                    onClick={() => signOut()}
+                    onPress={() => signOut()}
                 >
                 {<CiLogout className="w-6" />}
                     {!isOpen && "Logout"}
