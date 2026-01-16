@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, type ReactNode } from "react"
+import { useEffect, useState, useCallback, type ReactNode } from "react";
 import DashboardSidebar from "./Sidebar"
 import { SIDEBAR_ADMIN, SIDEBAR_MEMBER } from "./Layout.constant"
 
@@ -25,13 +25,13 @@ export default function DashboardLayout ({
         if (stored !== null) setIsOpen(stored === "true");
     }, []);
 
-    const handleIsOpen = () => {
+    const handleIsOpen = useCallback(() => {
         setIsOpen((prev) => {
             const next = !prev;
             localStorage.setItem("sidebar", String(next));
             return next;
         });
-    };
+    }, []);
 
     return (
         <div className="max-w-screen-3xl 3xl:container flex">
@@ -42,7 +42,7 @@ export default function DashboardLayout ({
                 isOpen={isOpen}
                 onOpen={handleIsOpen}
             />
-            <div className="h-screen w-full overflow-y-auto  flex flex-col justify-between px-4 py-6 transition-all">
+            <div className="h-screen w-full overflow-y-auto  flex flex-col px-12 py-6 transition-all">
                 {children}
             </div>
         </div>
