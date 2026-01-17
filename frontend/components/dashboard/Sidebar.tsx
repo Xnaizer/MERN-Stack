@@ -62,7 +62,6 @@ const DashboardSidebar = (props: PropTypes) => {
                             }
 
                             const isActive = pathname === items.href;
-                            // console.log(isActive)
 
                             return (
                             <li key={items.key} className="my-4">
