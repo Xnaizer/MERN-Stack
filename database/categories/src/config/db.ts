@@ -1,10 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 export const connectDB = async (mongoUri: string) => {
-    try {
-        await mongoose.connect(mongoUri);
-        console.log(`Database connected!`);
-    } catch (error) {
-        console.error('Error occured: ' + error)
-    }
-}
+  mongoose.set("strictQuery", true);
+
+  await mongoose.connect(mongoUri, {
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 30000,
+    connectTimeoutMS: 30000,
+  });
+
+  await mongoose.connection.asPromise();
+  process.stdout.write("Database connected!\n");
+};
