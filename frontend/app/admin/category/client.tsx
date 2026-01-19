@@ -2,8 +2,12 @@
 import DataTable from "@/components/ui/DataTable/DataTable";
 import { COLUMN_LISTS_CATEGORY } from "./category.constant";
 import useCategory from "./useCategory";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 const CategoryClient: React.FC = () => {
+
+    const searchParams = useSearchParams();
 
     const { 
         renderCell,
@@ -11,32 +15,36 @@ const CategoryClient: React.FC = () => {
         handleClearSearch,
         handleBtnTopContent,
         handleChangeLimit,
-        handleChangePagination 
+        handleChangePagination,
+        setURL,
+        data,
+        isLoading,
+        pagination,
+        currentPage,
+        limit
     } = useCategory();
+
+    useEffect(() => {
+        setURL();
+    },[searchParams,setURL]);
 
     return (
         <section>
             <DataTable
                 renderCell={renderCell}
                 colums={COLUMN_LISTS_CATEGORY}
-                data={[
-                    {
-                        _id: '123',
-                        name: "category 1",
-                        description: "description 1",
-                        icon: "/images/general/logo.png"
-                    }
-                ]}
+                data={data}
                 emptyContent="Category is empty"
                 onChangeSearch={handleChangeSearch}
                 onClearSearch={handleClearSearch}
                 onClickButtonTopContent={handleBtnTopContent}
                 buttonTopContentLabel="Create Category"
-                currentPage={1}
-                limit={10}
+                currentPage={currentPage}
+                limit={limit}
                 onChangeLimit={handleChangeLimit}
                 onChangePagination={handleChangePagination}
-                totalPage={12}
+                totalPage={pagination?.totalPages ?? 1}
+                isLoading={isLoading}
             >
 
             </DataTable>
