@@ -10,5 +10,9 @@
 		"@types/node": "^25.0.9",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
-	}
+	},
+	"scripts": {
+		"generate:categories": "tsx src/scripts/generateCategories.ts",
+		"import:categories": "tsx src/scripts/importCategories.ts"
+  	}
 }
