@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { IJWTExtended } from "./types/Auth";
 import environment from "./config/environment";
 import { getToken } from "next-auth/jwt";
@@ -11,6 +11,10 @@ export async function proxy(request: NextRequest) {
     });
 
     const {pathname} = request.nextUrl;
+
+    if(pathname === "/auth") {
+        return NextResponse.redirect(new URL("/auth/login", request.url))
+    }
 
     if(pathname === "/auth/login" || pathname === "/auth/register") {
         if (token) {
