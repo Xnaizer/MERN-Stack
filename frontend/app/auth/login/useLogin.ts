@@ -20,7 +20,7 @@ const useLogin = () => {
     const searchParams = useSearchParams();
 
 
-    const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [isVisible, setIsVisible] = useState<boolean>(true);
     const toggleVisibility = () => setIsVisible(!isVisible);
 
     const callbackUrl: string = searchParams?.get("callbackUrl") || "/";

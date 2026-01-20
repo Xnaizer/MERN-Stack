@@ -42,7 +42,7 @@ export default function DashboardLayout ({
                 isOpen={isOpen}
                 onOpen={handleIsOpen}
             />
-            <div className="h-screen w-full overflow-y-auto  flex flex-col px-12 py-6 transition-all">
+            <div className="h-screen w-full overflow-y-auto  flex flex-col px-6 py-3 md:px-12 md:py-6 transition-all">
                 {children}
             </div>
         </div>

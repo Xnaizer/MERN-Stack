@@ -19,7 +19,6 @@ export default function LoginClient() {
         errors 
     } = useLogin();
 
-    console.log(errors);
 
     return (
         <section className="flex lg:flex-row flex-col w-full items-center justify-center gap-20  ">
