@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@/components/useMediaQuery";
 import { LIMIT_LISTS } from "@/constant/list.constant";
 import { cn } from "@/utils/cn";
 import { Button, Input, Pagination, Select, SelectItem, Skeleton, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
@@ -12,6 +13,7 @@ interface IPropsTypes {
     totalPage: number;
     emptyContent: string;
     currentPage: number;
+    isLoading?: boolean;
     renderCell: (
         item: Record<string, unknown>,
         key: Key
@@ -21,10 +23,14 @@ interface IPropsTypes {
     onClickButtonTopContent?: () => void;
     onChangePagination: (page: number) => void;
     onChangeLimit: (e: ChangeEvent<HTMLSelectElement>) => void;
-    isLoading?: boolean;
+    onNextBtn: () => void;
+    onPrevBtn: () => void;
+    onOpenCategory: () => void;
 }
 
 const DataTable: React.FC<IPropsTypes> = (props) => {
+
+    const isMd = useMediaQuery("(min-width: 768px)");
 
     const {
         data = [],
@@ -41,6 +47,9 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
         onClickButtonTopContent,
         onChangePagination,
         onChangeLimit,
+        onNextBtn,
+        onPrevBtn,
+        onOpenCategory,
     } = props;
 
     const loading = isLoading ?? false;
@@ -48,23 +57,23 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
     const topContent = useMemo(() => {
         return (
             <div
-                className="flex flex-row justify-between items-center"
+                className="flex flex-col md:flex-row justify-between items-center"
             >
-                <div className="w-full flex items-center mt-6">
+                <div className="w-full flex items-center md:mt-6">
                     <Input  
                     isClearable
-                    className="w-full sm:max-w-[42%] mb-4"
+                    className="w-full md:max-w-[42%] mb-4"
                     placeholder="Search by name"
                     startContent={<CiSearch/>}
                     onClear={onClearSearch}
                     onChange={onChangeSearch}
-                    // size="lg"
+                    size={isMd ? "md" : "sm"}
                 />
                 </div>
                 <div className="flex gap-4 ">
                     <Select
                         disableSelectorIconRotation
-                        className=" w-39 text-md"
+                        className=" w-39 "
                         placeholder="Select limit"
                         selectedKeys={[String(limit)]}
                         selectionMode="single"
@@ -72,11 +81,13 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
                         aria-label="Select page size"
                         label="Show data : "
                         labelPlacement="outside-left"
-                        
+                        size={isMd ? "md" : "sm"}
 
                     >
                         {LIMIT_LISTS.map((item) => (
-                            <SelectItem key={String(item.value)}>
+                            <SelectItem 
+                            key={String(item.value)}
+                            >
                                 {item.label}
                             </SelectItem>
                         ) )}
@@ -85,9 +96,9 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
                     {buttonTopContentLabel && 
                     <Button 
                     color="danger"
-                    className="w-36 px-4"
-                    size="md"
-                    onPress={onClickButtonTopContent}
+                    className=" md:w-36 px-3 md:px-4"
+                    size={isMd ? "md" : "sm"}
+                    onPress={onOpenCategory}
                     >
                     {buttonTopContentLabel}
                     </Button>}
@@ -98,25 +109,26 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
         onClearSearch, 
         onChangeSearch, 
         buttonTopContentLabel, 
-        onClickButtonTopContent,
+        onOpenCategory,
         onChangeLimit,
-        limit
+        limit,
+        isMd
     ])
 
     const bottomContent = useMemo(() => {
         return (
-            <div className={`flex items-center px-4 py-3 justify-between ${isLoading && ''}`}>
+            <div className={`flex items-center px-4 py-3  justify-center md:justify-between ${isLoading && ''}`}>
                 <span className="hidden  sm:flex w-[30%] text-small text-default-400">
                     {isLoading ? 'loading page..' : `Viewing ${currentPage} of ${totalPage} pages`}
                 </span>
                 {!isLoading && (
                     <Pagination 
                         isCompact
-                        showControls
                         showShadow
                         color="danger"
                         page={currentPage}
                         total={totalPage}
+                        size={isMd ? "md" : "sm"}
                         onChange={(page) => onChangePagination(page)}
                     />
                 )}
@@ -124,20 +136,22 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
                     {!isLoading && (
                         <>
                             <Button 
-                                // isDisabled
+                                isDisabled={currentPage === 1}
                                 size="sm"
                                 variant="solid"
                                 color="danger"
-                                // onPress
+                                onPress={onPrevBtn}
+                                value={String(currentPage)}
                             >
                                 Previous
                             </Button>
                             <Button
-                                // isDisabled
+                                isDisabled={currentPage === totalPage}
                                 size="sm"
                                 variant="solid"
                                 color="danger"
-                                // onPress
+                                onPress={onNextBtn}
+                                value={String(currentPage)}
                             >
                                 Next
                             </Button>
@@ -150,7 +164,10 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
         onChangePagination,
         currentPage,
         totalPage,
-        isLoading
+        isLoading,
+        onNextBtn,
+        onPrevBtn,
+        isMd
     ]);
 
     return (
@@ -160,8 +177,10 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
             bottomContent={bottomContent}
             bottomContentPlacement="outside"
             classNames={{
-                base: "max-w-full",
-                wrapper: cn({"overflow-x-hidden": isLoading})
+                base: "max-w-full z-10",
+                wrapper: cn("text-[11px] md:text-sm", {"overflow-x-hidden": isLoading}),
+                th: "text-[11px] md:text-sm font-medium text-start",
+                td: "text-[11px] md:text-sm text-start items-start justify-start flex-row",
             }}
               style={{
                     minHeight: loading ? Number(limit)  * 78 : undefined,
@@ -169,8 +188,10 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
         >
             <TableHeader columns={colums}>
                 {(item) => (
-                    <TableColumn 
+                    <TableColumn
+
                         key={item.uid as Key}
+                        
                     >
                         {item.name as string}
                     </TableColumn>
@@ -200,10 +221,13 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
                 }
             >
                 {(item) => (
-                    <TableRow key={item._id as Key}>
-                    {(columnKey) => (
-                        <TableCell>{renderCell(item, columnKey)}</TableCell>
-                    )}
+                    <TableRow 
+                    
+                    key={item._id as Key}>
+                        {(columnKey) => (
+                            <TableCell
+                            >{renderCell(item, columnKey)}</TableCell>
+                        )}
                     </TableRow>
                 )}
             </TableBody>

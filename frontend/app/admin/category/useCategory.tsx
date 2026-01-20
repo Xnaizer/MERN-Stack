@@ -1,20 +1,25 @@
+'use client'
+import useDebounce from "@/hooks/useDebounce";
 import categoryServices from "@/services/category.service";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, Key, ReactNode, useCallback, useMemo } from "react";
+import { ChangeEvent, Key, ReactNode, useCallback, useMemo, useState } from "react";
 import { CiMenuKebab } from "react-icons/ci";
+
 
 
 const useCategory = () => {
 
     const { push } = useRouter();
+    const debounce = useDebounce();
+    const [isCategoryVisible, setCategoryVisible] = useState<boolean>(false);
 
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const currentLimit = searchParams.get('limit') ?? "10";
+    const currentLimit = searchParams.get('limit') ?? "5";
     const currentPage = searchParams.get('page') ?? "1";
     const currentSearch = searchParams.get('search') ?? "";
 
@@ -102,8 +107,10 @@ const useCategory = () => {
                                 />
                             </Button>
                         </DropdownTrigger>
-                        <DropdownMenu>
+                        <DropdownMenu
+                        >
                             <DropdownItem
+                            
                                 key="detail-category-button" 
                                 onPress={() => push(`/admin/category/${category._id}`)}
                             >
@@ -125,12 +132,36 @@ const useCategory = () => {
 
     },[push]);
 
-    const handleChangeSearch = () => {
-
+    const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        debounceSearch(e.target.value)
     }
 
-    const handleClearSearch = () => {
+    const debounceSearch = debounce((value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("page", "1");
+        params.set("search", String(value))
 
+        const next = params.toString();
+        const current = searchParams.toString();
+
+        if(next != current) {
+            router.replace(`?${next}`);
+        }
+
+    }, 500)
+
+    const handleClearSearch = () => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        params.set("search", "");
+        params.set("page", "1");
+
+        const next = params.toString();
+        const current = searchParams.toString();
+
+        if(next != current) {
+            router.replace(`?${next}`);
+        }
     }
 
     const handleBtnTopContent = () => {
@@ -149,8 +180,7 @@ const useCategory = () => {
         if(next != current) {
             router.replace(`?${next}`);
         }
-        refetch();
-    }, [refetch, router, searchParams])
+    }, [ router, searchParams]);
 
     const handleChangePagination = useCallback((page: number) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -162,8 +192,44 @@ const useCategory = () => {
         if(next !== current) {
             router.replace(`?${next}`);
         }
-        refetch();
-    },[searchParams, refetch, router])
+    },[searchParams, router]);
+
+    const handlePrevBtn = useCallback(() => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        const page =  params.get("page");
+        params.set("page", String(Number(page) - 1));
+
+        const next = params.toString();
+        const current = searchParams.toString();
+
+        if( next !== current) {
+            router.replace(`?${next}`)
+        }
+        
+
+    }, [searchParams, router]);
+
+    const handleNextBtn = useCallback(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        const page = params.get("page");
+        params.set("page", String(Number(page) + 1))
+
+        const next = params.toString();
+        const current = searchParams.toString();
+
+        if(next !== current) {
+            router.replace(`?${next}`)
+        }
+    }, [router, searchParams]);
+
+    const handleOpenCategory = () => {
+        setCategoryVisible(true);
+    }
+
+    const handleCloseCategory = () => {
+        setCategoryVisible(false);
+    }
 
     return {
         renderCell,
@@ -173,11 +239,16 @@ const useCategory = () => {
         handleChangeLimit,
         handleChangePagination,
         setURL,
+        handlePrevBtn,
+        handleNextBtn,
+        handleOpenCategory,
+        handleCloseCategory,
         data: categories,
         pagination,
         currentPage: currentPageNum,
         limit: currentLimitNum,
-        isLoading
+        isLoading,
+        isCategoryVisible
     }
 
 
