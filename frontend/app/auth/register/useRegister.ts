@@ -7,6 +7,7 @@ import { IRegister } from "@/types/Auth";
 import authServices from "@/services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const registerSchema = yup.object().shape({
     fullName: yup.string().required("Please input your full name"),
@@ -53,11 +54,13 @@ const useRegister = () => {
         onError(error) {
             setError("root", {
                 message: error.message
-            })
+            });
+            toast.error('Error Register');
         },
         onSuccess: () => {
-            router.push("/auth/register/success")
-            reset()
+            router.push("/auth/register/success");
+            reset();
+            toast.success("Registration Success");
         }
     })
 

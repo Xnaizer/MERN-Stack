@@ -7,14 +7,21 @@ import { ILogin } from "@/types/Auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import toast, { Toaster } from 'react-hot-toast';
 
 const loginSchema = yup.object().shape({
     identifier: yup.string().required("Please input your email or username"),
     password: yup.string().required("Please input your password")
-})
+});
+
+
 
 
 const useLogin = () => {
+
+    const tSuccessLogin = () => {
+        toast('Login Success');
+    }
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -35,9 +42,15 @@ const useLogin = () => {
             ...payload,
             redirect: false,
             callbackUrl
-        })
+        });
+        
+        if(result?.ok) {
+            toast.success('Login Success');
+        }
+
         if(result?.error && result?.status === 401) {
-            throw new Error("Email or username not match with your password")
+            toast.error('Email or username not match with your password');
+            throw new Error("Email or username not match with your password");
         }
     }
 
@@ -63,7 +76,8 @@ const useLogin = () => {
         handleSubmit,
         handleLogin,
         isPendingLogin,
-        errors
+        errors,
+        tSuccessLogin
     }
 }
 

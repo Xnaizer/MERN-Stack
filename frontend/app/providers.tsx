@@ -5,6 +5,7 @@ import { SessionProvider, signOut, useSession } from "next-auth/react";
 import type { Session } from "next-auth";
 import { ReactNode, useEffect } from "react";
 import { ISessionExtended } from "@/types/Auth";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -64,6 +65,7 @@ const SessionExpiryWatcher = () => {
 export function Providers({ children, session }: ProvidersProps) {
     return (
         <SessionProvider session={session}>
+            <Toaster />
             <SessionExpiryWatcher />
             <QueryClientProvider client={queryClient}>
                 <HeroUIProvider>

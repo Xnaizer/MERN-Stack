@@ -2,6 +2,8 @@
 import { Button } from "@heroui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 interface PropTypes {
     status: 'success' | 'failed'
@@ -11,6 +13,15 @@ const ActivationClient = (props: PropTypes) => {
 
     const router = useRouter();
     const { status } = props;
+
+
+    useEffect(() => {
+        if(status === 'success') { 
+            toast.success('Account activation success');
+        } else {
+          toast.error('Account activation error');
+        }
+    },[status])
 
     return (
         <section className="flex w-screen flex-col items-center justify-center gap-10 p-4">

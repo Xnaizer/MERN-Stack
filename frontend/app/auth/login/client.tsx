@@ -7,6 +7,7 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { Controller } from "react-hook-form"
 import { cn } from "@/utils/cn"
 
+
 export default function LoginClient() {
 
     const {
@@ -16,7 +17,8 @@ export default function LoginClient() {
         handleSubmit,
         handleLogin, 
         isPendingLogin,
-        errors 
+        errors,
+        tSuccessLogin
     } = useLogin();
 
 
@@ -46,7 +48,7 @@ export default function LoginClient() {
                             <Link href="/auth/register" className="font-semibold text-danger-400">Register here</Link>
                         </p>
                         {errors.root && (
-                            <p className="mb-2 font-medium text-danger">
+                            <p className="mb-2 font-medium text-danger text-sm">
                                 {errors?.root?.message}
                             </p>
                         )}
@@ -97,7 +99,13 @@ export default function LoginClient() {
                                 )}
                             />
 
-                            <Button className="mt-4" color="danger" size="lg" type="submit" >
+                            <Button 
+                                className="mt-4" 
+                                color="danger" 
+                                size="lg" 
+                                type="submit"
+                                
+                            >
                                 {isPendingLogin ? (
                                     <Spinner color="white" size="sm" /> 
                                 ) : "Login" }
@@ -107,7 +115,8 @@ export default function LoginClient() {
                     </CardBody>
                 </Card>
             </div>
-
+            
+            
         </section>
     )
 }

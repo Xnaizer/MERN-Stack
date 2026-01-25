@@ -13,8 +13,7 @@ type PageProps = {
 
 export default async function ActivationPage({ searchParams }: PageProps) {
 
-    const { code } = await searchParams;
-
+  const { code } = await searchParams;
 
   if(!code) {
     return <ActivationClient status="failed" />
