@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 export type TCategory = {
-    name: string;
-    description: string;
-    icon: string;
+  name: string;
+  description: string;
+  icon: string;
 }
 
 const Schema = mongoose.Schema;

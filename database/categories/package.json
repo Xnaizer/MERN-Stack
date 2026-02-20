@@ -13,6 +13,7 @@
 	},
 	"scripts": {
 		"generate:categories": "tsx src/scripts/generateCategories.ts",
-		"import:categories": "tsx src/scripts/importCategories.ts"
+		"import:categories": "tsx src/scripts/importCategories.ts",
+		"generate:images": "tsx src/scripts/generateImages.ts"
   	}
 }
