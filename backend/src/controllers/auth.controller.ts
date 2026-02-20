@@ -75,7 +75,8 @@ export default {
       });
 
       if (!userByIdentifier) {
-        return response.unauthorized(res, 'User Not Found!');
+        // return response.unauthorized(res, 'User Not Found!');
+        return response.unauthorized(res, 'Username or Email doesnt match with your password!');
       }
 
       if (!userByIdentifier.isActive) {
@@ -85,7 +86,8 @@ export default {
       const validatePassword: boolean = (await encrypt(password)) === userByIdentifier.password;
 
       if (!validatePassword) {
-        return response.unauthorized(res, 'Incorrect password');
+        // return response.unauthorized(res, 'Incorrect password');
+        return response.unauthorized(res, 'Username or Email doesnt match with your password!');
       }
 
       const token = generateToken({
