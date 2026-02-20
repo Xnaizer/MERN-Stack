@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { IReqUser } from '../utils/interfaces';
 import uploader from '../utils/uploader';
 import response from '../utils/response';
+import ImageModel from '../models/image.model';
 
 export default {
   async single(req: IReqUser, res: Response) {
@@ -9,12 +10,24 @@ export default {
       return response.error(res, null, 'File is not exist');
     }
 
-    try {
-      const result = await uploader.uploadSingle(req.file as Express.Multer.File);
+    let uploaded;
 
-      response.success(res, result, 'Success upload a file');
-    } catch {
-      response.error(res, null, 'Failed upload a file');
+    try {
+      uploaded = await uploader.uploadSingleImage(req.file as Express.Multer.File);
+
+      const image = await ImageModel.create({
+        url: uploaded.secure_url,
+        publicImgId: uploaded.public_id,
+        createdBy: req.user?.id
+      });
+
+      return response.success(res, image, 'Success upload a file');
+    } catch (error) {
+      if(uploaded?.secure_url) {
+        await uploader.removeMedia(uploaded.secure_url)
+      }
+
+      return response.error(res, error, 'Failed upload a file');
     }
   },
 
@@ -24,7 +37,7 @@ export default {
     }
 
     try {
-      const result = await uploader.uploadMultiple(req.files as Express.Multer.File[]);
+      const result = await uploader.uploadMultipleImage(req.files as Express.Multer.File[]);
 
       response.success(res, result, 'Success upload files');
     } catch {
