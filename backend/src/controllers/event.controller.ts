@@ -41,6 +41,8 @@ export default {
         .limit(limit)
         .skip((page - 1) * limit)
         .sort({ createdAt: -1 })
+        .populate("category", "-_id name icon")
+        .populate("createdBy", "-_id fullName email")
         .exec();
 
       const count = await EventModel.countDocuments(query);
