@@ -8,9 +8,9 @@ import eventRouter from './event.route';
 
 const router = express.Router();
 
+router.use('/test', testRouter);
 router.use('/auth', authRouter);
 router.use('/media', mediaRouter);
-router.use('/test', testRouter);
 router.use(categoryRouter);
 router.use(regionRouter);
 router.use(eventRouter);

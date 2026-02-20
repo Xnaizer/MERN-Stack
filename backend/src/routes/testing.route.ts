@@ -19,4 +19,11 @@ testRouter.get(
 // dummy controller
 testRouter.get('/dummy', dummyController.dummy);
 
+// test images statuses
+testRouter.get(
+  "/images",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])], 
+  dummyController.getImages
+);
+
 export default testRouter;
