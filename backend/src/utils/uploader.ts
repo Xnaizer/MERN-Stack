@@ -21,23 +21,18 @@ const getPublicIdFromFileUrl = (fileUrl: string) => {
 };
 
 export default {
-  async uploadSingle(file: Express.Multer.File) {
+  async uploadSingleImage(file: Express.Multer.File) {
     const fileDataURL = toDataURL(file);
-    const result = await cloudinary.uploader.upload(fileDataURL, {
-      resource_type: 'auto',
-    });
 
-    return result;
+    return await cloudinary.uploader.upload(fileDataURL, {
+      resource_type: 'image',
+      folder: "mern_app_images",
+      allowed_formats: ["jpg", "jpeg", "png", "webp"]
+    });
   },
 
-  async uploadMultiple(files: Express.Multer.File[]) {
-    const uploadBatch = files.map((item) => {
-      const result = this.uploadSingle(item);
-      return result;
-    });
-
-    const results = await Promise.all(uploadBatch);
-    return results;
+  async uploadMultipleImage(files: Express.Multer.File[]) {
+    return await Promise.all(files.map(f => this.uploadSingleImage(f)))
   },
 
   async removeMedia(fileUrl: string) {
