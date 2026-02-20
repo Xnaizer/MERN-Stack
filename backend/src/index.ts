@@ -4,6 +4,8 @@ import bodyParser from 'body-parser';
 import db from './utils/database';
 import docs from './docs/route';
 import cors from 'cors';
+import { PORT_VALUE } from './utils/env';
+import job from './utils/cron';
 
 async function init() {
   console.log('Server is starting...');
@@ -16,7 +18,9 @@ async function init() {
     app.use(cors());
     app.use(bodyParser.json());
 
-    const PORT = 3000;
+    job.start();
+
+    const PORT = PORT_VALUE;
 
     app.get('/', (req, res) => {
       res.status(200).json({
