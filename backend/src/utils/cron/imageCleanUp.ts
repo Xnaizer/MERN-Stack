@@ -11,7 +11,7 @@ const imagesCleanUp = async () => {
         }});
 
         if(result.deletedCount !== 0) {
-            console.log(`[SERVER]: Image data with status TEMPORARY and EXPIRED already deleted! \n [SERVER]: Deleted = ${result.deletedCount} Data`);
+            console.log(`[SERVER]: Image data with status TEMPORARY and EXPIRED already deleted! \n[SERVER]: Deleted = ${result.deletedCount} Data`);
         } else {
             console.log('[SERVER]: Image with spesific option not exist, continuing next proccess..')
         }

@@ -8,11 +8,11 @@ import { PORT_VALUE } from './utils/env';
 import job from './utils/cron';
 
 async function init() {
-  console.log('Server is starting...');
+  console.log('[SERVER]: Server is starting...');
 
   try {
     const dbConnection = await db();
-    console.log('database status:', dbConnection);
+    console.log('[SERVER]: database status:', dbConnection);
 
     const app = express();
     app.use(cors());
@@ -34,7 +34,7 @@ async function init() {
     docs(app);
 
     app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}/api`);
+      console.log(`[SERVER]: Server is running on http://localhost:${PORT}/api`);
     });
   } catch (error) {
     console.log(error);
