@@ -7,7 +7,7 @@ import { ILogin } from "@/types/Auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const loginSchema = yup.object().shape({
     identifier: yup.string().required("Please input your email or username"),
@@ -15,13 +15,7 @@ const loginSchema = yup.object().shape({
 });
 
 
-
-
 const useLogin = () => {
-
-    const tSuccessLogin = () => {
-        toast('Login Success');
-    }
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -77,7 +71,6 @@ const useLogin = () => {
         handleLogin,
         isPendingLogin,
         errors,
-        tSuccessLogin
     }
 }
 
