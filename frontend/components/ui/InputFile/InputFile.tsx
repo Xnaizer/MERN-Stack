@@ -1,108 +1,115 @@
-'use client';
+'use client'
 import { cn } from "@/utils/cn";
 import { Button } from "@heroui/react";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useId, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useId, useState } from "react";
 import { FiUpload, FiX } from "react-icons/fi";
 
 interface InputProps {
     name: string;
-    className? : string;
+    className?: string;
     isDropable?: boolean;
+    uploadedImage: File | null;
+    setUploadedImage: React.Dispatch<React.SetStateAction<File | null>>;
+    isInvalid: boolean;
+    errorMessage: string;
 }
-
 
 const InputFile = (props: InputProps) => {
 
-    const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-
-    const { 
+    const {
         name,
         className,
-        isDropable = false
+        isDropable = false,
+        uploadedImage,
+        setUploadedImage,
+        isInvalid,
+        errorMessage
     } = props;
 
-    const drop = useRef<HTMLLabelElement>(null);
     const dropzoneId = useId();
+    const [preview, setPreview] = useState<string | null>(null);
 
-    const handleDragOver = (e: DragEvent) => {
-        if(isDropable) {
-            e.preventDefault();
-            e.stopPropagation();
+    useEffect(() => {
+        if(!uploadedImage) {
+            setPreview(null);
+            return;
         }
+        const url = URL.createObjectURL(uploadedImage);
+        setPreview(url);
+
+        return () => URL.revokeObjectURL(url);
+    },[uploadedImage]);
+
+    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if(file) setUploadedImage(file);
     }
 
-    const handleDrop = (e: DragEvent) => {
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault();
-        setUploadedImage(e.dataTransfer?.files?.[0] || null)
+        if (!isDropable) return;
+        const file = e.dataTransfer.files?.[0]
+        if(file) setUploadedImage(file);
+    }
+
+    const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+        if(!isDropable) return;
+        e.preventDefault();
+        e.stopPropagation();
     }
 
     const handleDelete = () => {
         setUploadedImage(null);
     }
 
-    useEffect(() => {
-        const dropCurrent = drop.current;
-
-        if(dropCurrent) {
-            dropCurrent.addEventListener('dragover', handleDragOver);
-            dropCurrent.addEventListener('drop', handleDrop);
-
-            return () => {
-                dropCurrent.removeEventListener("dragover", handleDragOver);
-                dropCurrent.removeEventListener("drop", handleDrop);
-            }
-        }
-    },[]);
-
-    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const files = e.currentTarget.files;
-
-        if(files && files.length > 0) {
-            setUploadedImage(files[0]);
-        }
-    }
-
     return (
+        <>
         <label
-            ref={drop}
             htmlFor={`dropzone-file-${dropzoneId}`}
-            className={cn("flex min-h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-400", className)}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            className={cn(
+                `flex min-h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed ${isInvalid ? "border-danger-400" : "border-gray-400"} hover:border-gray-600 transition`,
+                className
+            )}
         >
-            {uploadedImage ? (
-                <div className="flex flex-col items-center justify-center p-5">
-
-                    <div>
-                        <Image 
-                            fill 
-                            src={URL.createObjectURL(uploadedImage)} 
+            {preview ? (
+                <div className="flex flex-col items-center w-full">
+                    <div className="relative w-full max-w-[500px] h-[300px]">
+                        <Image
+                            fill
+                            src={preview}
                             alt="uploaded image"
-                            className="relative!" 
+                            className="object-contain rounded-md"
                         />
-                        <p className="text-center text-sm font-semibold text-gray-500 mt-6">
-                            {uploadedImage.name}
-                        </p>
 
+                        <Button
+                            isIconOnly
+                            onPress={handleDelete}
+                            variant="flat"
+                            size="sm"
+                            color="danger"
+                            className="absolute top-2 right-2"
+                        >
+                            <FiX />
+                        </Button>
                     </div>
-                    <Button 
-                        // isIconOnly
-                        className="mt-3"
-                        onPress={handleDelete}
-                        color="danger"
-                        variant="flat"
-                    >
-                        <FiX /> Cancel
-                    </Button>
+
+                    <p className="text-sm font-semibold text-gray-500 mt-3">
+                        {uploadedImage?.name}
+                    </p>
                 </div>
-            ):(
-                <div className="flex flex-col items-center text-center justify-center p-5">
-                    <FiUpload className="text-2xl text-gray-500 mb-3" />
-                    <p className="text-center text-sm font-semibold text-gray-500">
+            ) : (
+                <div className="flex flex-col items-center text-center p-5">
+                    <FiUpload className={`text-2xl ${isInvalid ? "text-danger-500" : "text-gray-500"} mb-3`} />
+                    <p className={`text-sm font-light
+                         ${isInvalid ? "text-danger-500" : "text-gray-500"}`}>
                         {name}
                     </p>
-
                 </div>
             )}
+
             <input
                 name={name}
                 type="file"
@@ -110,9 +117,13 @@ const InputFile = (props: InputProps) => {
                 accept="image/*"
                 id={`dropzone-file-${dropzoneId}`}
                 onChange={handleOnChange}
-            >
-            </input>
+            />
+            
         </label>
+        <div className="mt-2">
+            {isInvalid && <p className="text-danger-500 text-xs font-light">{errorMessage}</p>}
+        </div>
+        </>
     )
 
 }
