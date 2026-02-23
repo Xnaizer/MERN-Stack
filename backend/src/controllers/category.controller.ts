@@ -2,6 +2,7 @@ import { type Response } from 'express';
 import { IPaginationQuery, type IReqUser } from '../utils/interfaces';
 import CategoryModel, { categoryDAO } from '../models/category.model'; 
 import response from '../utils/response';
+import ImageModel from '../models/image.model';
 
 
 export default {
@@ -10,8 +11,19 @@ export default {
         await categoryDAO.validate(req.body)
 
         const result = await CategoryModel.create(req.body);
+        const imageUpdate = await ImageModel.findByIdAndUpdate(result.iconId,
+            {
+                status: 'permanent',
+                usedBy: 'category'
+            },
+            {
+                new: true
+            }
+        )
+        
+        const data = [result, imageUpdate];
 
-        response.success(res,result, 'Success create a category' )
+        response.success(res,data, 'Success create a category' )
     } catch (error) {
         response.error(res, error, 'Failed create category');
     }
