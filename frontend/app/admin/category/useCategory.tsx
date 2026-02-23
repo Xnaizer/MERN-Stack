@@ -5,16 +5,14 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, Key, ReactNode, useCallback, useMemo, useState } from "react";
+import { Key, ReactNode, useCallback, useMemo } from "react";
 import { CiMenuKebab } from "react-icons/ci";
-
 
 
 const useCategory = () => {
 
     const { push } = useRouter();
     const debounce = useDebounce();
-    const [isCategoryVisible, setCategoryVisible] = useState<boolean>(false);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -65,10 +63,11 @@ const useCategory = () => {
         return true;
     },[currentPage, currentLimit])
 
-    const { data, isLoading, isFetching, refetch } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ["Category", currentPage, currentLimit,currentSearch],
         queryFn: getCategories,
         enabled: isQueryEnabled,
+        staleTime: 1 * 60 * 1000
     })
 
     const categories = data?.data ?? [];
@@ -84,15 +83,22 @@ const useCategory = () => {
         const cellValue = category[columnKey as keyof typeof category];
 
         switch(columnKey) {
-            case "icon":
+            case "icon": {
+                
+                const value = String(cellValue ?? '');
+                const isValid = value.includes("/image/upload/") && !value.includes("player.cloudinary.com");
+
+                const src = isValid ? value : "https://res.cloudinary.com/dsurpllxe/image/upload/v1771536124/cancel_oxokbs.png";
+
                 return (
                     <Image 
-                        src={`${cellValue}`} 
+                        src={src} 
                         alt="icon"
                         width={100}
                         height={200}
                     />
                 )
+            }
             case "actions":
                 return (
                     <Dropdown>
@@ -164,15 +170,11 @@ const useCategory = () => {
         }
     }
 
-    const handleBtnTopContent = () => {
-
-    }
-
-    const handleChangeLimit = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
+    const handleChangeLimit = useCallback((value: string) => {
         const params = new URLSearchParams(searchParams.toString());
 
         params.set("page", "1");
-        params.set("limit", String(e.target.value));
+        params.set("limit", value);
 
         const next = params.toString();
         const current = searchParams.toString();
@@ -180,7 +182,7 @@ const useCategory = () => {
         if(next != current) {
             router.replace(`?${next}`);
         }
-    }, [ router, searchParams]);
+    }, [router, searchParams]);
 
     const handleChangePagination = useCallback((page: number) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -206,8 +208,7 @@ const useCategory = () => {
         if( next !== current) {
             router.replace(`?${next}`)
         }
-        
-
+    
     }, [searchParams, router]);
 
     const handleNextBtn = useCallback(() => {
@@ -223,34 +224,24 @@ const useCategory = () => {
         }
     }, [router, searchParams]);
 
-    const handleOpenCategory = () => {
-        setCategoryVisible(true);
-    }
 
-    const handleCloseCategory = () => {
-        setCategoryVisible(false);
-    }
 
     return {
         renderCell,
         handleClearSearch,
         handleChangeSearch,
-        handleBtnTopContent,
         handleChangeLimit,
         handleChangePagination,
         setURL,
         handlePrevBtn,
         handleNextBtn,
-        handleOpenCategory,
-        handleCloseCategory,
+
         data: categories,
         pagination,
         currentPage: currentPageNum,
         limit: currentLimitNum,
         isLoading,
-        isCategoryVisible
     }
-
 
 }
 
