@@ -2,38 +2,162 @@
 import DataTable from "@/components/ui/DataTable/DataTable";
 import { COLUMN_LISTS_CATEGORY } from "./category.constant";
 import useCategory from "./useCategory";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { FiX } from "react-icons/fi";
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea } from "@heroui/react";
-import InputFile from "@/components/ui/InputFile/InputFile";
+import CategoryModal from "./addCategoryModal";
+import { Button, Input, Pagination, Select, SelectItem } from "@heroui/react";
+import { CiSearch } from "react-icons/ci";
+import { LIMIT_LISTS } from "@/constant/list.constant";
+import { useMediaQuery } from "@/components/useMediaQuery";
+import useCategoryModal from "./useCategoryModal";
 
 const CategoryClient: React.FC = () => {
+
   const searchParams = useSearchParams();
+  const isMd = useMediaQuery("(min-width: 768px)");
+  const modalAddCategory = useCategoryModal();
 
   const {
     renderCell,
     handleChangeSearch,
     handleClearSearch,
-    handleBtnTopContent,
     handleChangeLimit,
     handleChangePagination,
     setURL,
     handlePrevBtn,
     handleNextBtn,
-    handleOpenCategory,
-    handleCloseCategory,
     data,
     isLoading,
     pagination,
     currentPage,
     limit,
-    isCategoryVisible,
   } = useCategory();
+
+  const {
+
+  } = useCategoryModal();
 
   useEffect(() => {
     setURL();
   }, [searchParams, setURL]);
+
+    const topContent = useMemo(() => {
+        return (
+            <div
+                className="flex flex-col md:flex-row justify-between items-center"
+            >
+                <div className="w-full flex items-center md:mt-6">
+                    <Input  
+                    isClearable
+                    className="w-full md:max-w-[42%] mb-4"
+                    placeholder="Search by name"
+                    startContent={<CiSearch/>}
+                    onClear={handleClearSearch}
+                    onChange={handleChangeSearch}
+                    size={isMd ? "md" : "sm"}
+                />
+                </div>
+                <div className="flex gap-4 ">
+                    <Select
+                        disallowEmptySelection
+                        disableSelectorIconRotation
+                        className=" w-39 "
+                        placeholder="Select limit"
+                        selectedKeys={[String(limit)]}
+                        selectionMode="single"
+                        onSelectionChange={(keys) => {
+                            const value = Array.from(keys)[0]
+                            handleChangeLimit(value as string);
+                        }}
+                        aria-label="Select page size"
+                        label="Show data: "
+                        labelPlacement="outside-left"
+                        size={isMd ? "md" : "sm"}
+
+                    >
+                        {LIMIT_LISTS.map((item) => (
+                            <SelectItem 
+                            key={String(item.value)}
+                            >
+                                {item.label}
+                            </SelectItem>
+                        ) )}
+                    </Select>
+
+                    <Button 
+                    color="danger"
+                    className=" md:w-36 px-3 md:px-4"
+                    size={isMd ? "md" : "sm"}
+                    onPress={modalAddCategory.handleOpenCategory}
+                    >
+                    {"Create Category"}
+                    </Button>
+                </div>
+            </div>
+        )
+    }, [
+        handleClearSearch, 
+        handleChangeSearch, 
+        modalAddCategory.handleOpenCategory,
+        handleChangeLimit,
+        limit,
+        isMd
+    ]);
+
+    const bottomContent = useMemo(() => {
+        return (
+            <div className={`flex items-center px-4 py-3  justify-center md:justify-between ${isLoading && ''}`}>
+                <span className="hidden  sm:flex w-[30%] text-small text-default-400">
+                    {isLoading ? 'loading page..' : `Viewing ${currentPage} of ${pagination?.totalPages ?? 1} pages`}
+                </span>
+                {!isLoading && (
+                    <Pagination 
+                        isCompact
+                        showShadow
+                        color="danger"
+                        page={currentPage}
+                        total={pagination?.totalPages ?? 1}
+                        size={isMd ? "md" : "sm"}
+                        onChange={(page) => handleChangePagination(page)}
+                    />
+                )}
+                <div className="hidden sm:flex w-[30%] justify-end gap-2">
+                    {!isLoading && (
+                        <>
+                            <Button 
+                                isDisabled={currentPage === 1}
+                                size="sm"
+                                variant="solid"
+                                color="danger"
+                                onPress={handlePrevBtn}
+                                value={String(currentPage)}
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                isDisabled={currentPage === pagination?.totalPages}
+                                size="sm"
+                                variant="solid"
+                                color="danger"
+                                onPress={handleNextBtn}
+                                value={String(currentPage)}
+                            >
+                                Next
+                            </Button>
+                        </>
+                    )}
+                </div>
+            </div>
+        )
+    },[
+        handleChangePagination,
+        currentPage,
+        pagination?.totalPages,
+        isLoading,
+        handleNextBtn,
+        handlePrevBtn,
+        isMd
+    ]);
 
   return (
     <section>
@@ -42,91 +166,14 @@ const CategoryClient: React.FC = () => {
         colums={COLUMN_LISTS_CATEGORY}
         data={data}
         emptyContent="Category is empty"
-        onChangeSearch={handleChangeSearch}
-        onClearSearch={handleClearSearch}
-        onClickButtonTopContent={handleBtnTopContent}
-        buttonTopContentLabel="Create Category"
-        currentPage={currentPage}
         limit={limit}
-        onChangeLimit={handleChangeLimit}
-        onChangePagination={handleChangePagination}
-        totalPage={pagination?.totalPages ?? 1}
         isLoading={isLoading}
-        onNextBtn={handleNextBtn}
-        onPrevBtn={handlePrevBtn}
-        onOpenCategory={handleOpenCategory}
+        topContent={topContent}
+        bottomContent={bottomContent}
       ></DataTable>
-
-        <Modal
-            backdrop="opaque"
-            isOpen={isCategoryVisible}
-            motionProps={{
-            variants: {
-                enter: {
-                y: 0,
-                opacity: 1,
-                transition: {
-                    duration: 0.3,
-                    ease: "easeOut",
-                },
-                },
-                exit: {
-                y: -20,
-                opacity: 0,
-                transition: {
-                    duration: 0.2,
-                    ease: "easeIn",
-                },
-                },
-            },
-            }}
-            onOpenChange={handleOpenCategory}
-            onClose={handleCloseCategory}
-        >
-            <ModalContent>
-            {(onClose) => (
-                <>
-                <ModalBody>
-                    <section className="px-4 py-8">
-                        <h1 className="text-xl font-semibold">Add Category</h1>
-
-                        <div className="mt-6 font-semibold gap-2">
-                            <h2 className="text-base mb-3">Information</h2>
-                            <Input 
-                                label="Name" 
-                                size="md" 
-                                type="name" 
-                                variant="bordered" 
-                                
-                                className="font-light"
-                            />
-                            <Textarea 
-                                
-                                className="max-w-xs" 
-                                label="Description" 
-                                variant="bordered" 
-                                className="w-full mt-4 font-light"
-                            />
-                            <h2 className="text-base mt-6 mb-3">Icon</h2>
-                            <InputFile 
-                                name='Click / Drag to upload file here'
-                                isDropable
-                            />
-                        </div>
-                    </section>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="danger" variant="flat" onPress={onClose}>
-                        Close
-                    </Button>
-                    <Button color="danger" onPress={onClose}>
-                        Create Category
-                    </Button>
-                </ModalFooter>
-                </>
-            )}
-            </ModalContent>
-        </Modal>
+      <CategoryModal 
+        modalAdd={modalAddCategory}
+      />
     </section>
   );
 };
