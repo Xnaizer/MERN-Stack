@@ -1,5 +1,6 @@
 import { cn } from "@/utils/cn";
 import { Skeleton, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import { Key, ReactNode } from "react";
 
 interface IPropsTypes {
@@ -14,10 +15,13 @@ interface IPropsTypes {
     ) => ReactNode;
     topContent: ReactNode,
     bottomContent: ReactNode,
+    routeTo: string
 }
 
 const DataTable: React.FC<IPropsTypes> = (props) => {
 
+    const router = useRouter();
+    
     const {
         data = [],
         colums,
@@ -26,7 +30,8 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
         emptyContent,
         renderCell,
         topContent,
-        bottomContent
+        bottomContent,
+        routeTo
     } = props;
 
     const loading = isLoading ?? false;
@@ -97,6 +102,8 @@ const DataTable: React.FC<IPropsTypes> = (props) => {
                 {(item) => (
                     <TableRow 
                         key={item._id as Key}
+                        onClick={() => router.push(`${routeTo}/${item._id}`)}
+                        className="cursor-pointer"
                     >
                         {(columnKey) => (
                             <TableCell
