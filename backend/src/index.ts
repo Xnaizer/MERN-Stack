@@ -6,6 +6,7 @@ import docs from './docs/route';
 import cors from 'cors';
 import { PORT_VALUE } from './utils/env';
 import job from './utils/cron';
+import errorMiddleware from './middlewares/error.middleware';
 
 async function init() {
   console.log('[SERVER]: Server is starting...');
@@ -15,8 +16,10 @@ async function init() {
     console.log('[SERVER]: database status:', dbConnection);
 
     const app = express();
+
     app.use(cors());
     app.use(bodyParser.json());
+    
 
     job.start();
 
@@ -32,6 +35,8 @@ async function init() {
 
     app.use('/api', router);
     docs(app);
+
+    app.use(errorMiddleware);
 
     app.listen(PORT, () => {
       console.log(`[SERVER]: Server is running on http://localhost:${PORT}/api`);

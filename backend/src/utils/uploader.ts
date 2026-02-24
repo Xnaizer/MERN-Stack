@@ -27,7 +27,7 @@ export default {
     return await cloudinary.uploader.upload(fileDataURL, {
       resource_type: 'image',
       folder: "mern_app_images",
-      allowed_formats: ["jpg", "jpeg", "png", "webp"]
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
     });
   },
 

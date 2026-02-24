@@ -3,6 +3,7 @@ import type { Response } from 'express';
 import * as Yup from 'yup';
 import mongoose from 'mongoose';
 import type { TPagination } from './types';
+import multer from 'multer';
 
 type TMeta = {
   status: number;
@@ -89,6 +90,16 @@ export default {
 
     if(error instanceof mongoose.Error.CastError) {
       return json(res, 400, `Invalid ${error.path}`, { value: error.value})
+    }
+
+    if(error instanceof multer.MulterError) {
+      if(error.code === "LIMIT_FILE_SIZE") {
+        return json(res, 400, "File too large", {
+          maxSize: "2MB"
+        });
+      }
+
+      return json(res, 400, error.message, null);
     }
 
     const anyErr = error as any;
