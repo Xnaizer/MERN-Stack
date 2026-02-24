@@ -21,9 +21,15 @@ testRouter.get('/dummy', dummyController.dummy);
 
 // test images statuses
 testRouter.get(
-  "/images",
-  [authMiddleware, aclMiddleware([ROLES.ADMIN])], 
-  dummyController.getImages
+  '/images',
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  dummyController.getImages,
+);
+
+testRouter.get(
+  '/images-all',
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  dummyController.getAllData,
 );
 
 export default testRouter;
