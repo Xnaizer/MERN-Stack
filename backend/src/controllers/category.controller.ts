@@ -3,6 +3,7 @@ import { IPaginationQuery, type IReqUser } from '../utils/interfaces';
 import CategoryModel, { categoryDAO } from '../models/category.model'; 
 import response from '../utils/response';
 import ImageModel from '../models/image.model';
+import uploader from '../utils/uploader';
 
 
 export default {
@@ -119,7 +120,15 @@ export default {
             return response.notFound(res, 'Category not found');
         }
 
-        response.success(res, result, 'Success remove category');
+        const image = await ImageModel.findByIdAndUpdate(result.iconId, {
+            status: "temporary"
+        });
+        
+        const deleteImg = await uploader.removeMedia(result.icon);
+
+        const data = [result, deleteImg, image];
+
+        response.success(res, data, 'Success remove category');
     } catch (error) {
         response.error(res, error, 'Failed remove category');
     }
