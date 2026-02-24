@@ -20,7 +20,6 @@ async function init() {
     app.use(cors());
     app.use(bodyParser.json());
     
-
     job.start();
 
     const PORT = PORT_VALUE;
