@@ -4,7 +4,7 @@ import { SECRET_KEY } from './env';
 
 export const generateToken = (user: IUserToken): string => {
   const token = jwt.sign(user, SECRET_KEY, {
-    expiresIn: '1h',
+    expiresIn: '24h',
   });
 
   return token;
