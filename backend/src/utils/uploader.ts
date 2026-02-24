@@ -37,7 +37,7 @@ export default {
 
   async removeMedia(fileUrl: string) {
     const publicId = getPublicIdFromFileUrl(fileUrl);
-    const result = await cloudinary.uploader.destroy(publicId);
+    const result = await cloudinary.uploader.destroy(`mern_app_images/${publicId}`);
     return result;
   },
 };
