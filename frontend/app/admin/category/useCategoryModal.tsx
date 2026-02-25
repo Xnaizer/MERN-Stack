@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import * as Yup from 'yup';
 
 const addCategorySchema = Yup.object({
@@ -54,12 +55,14 @@ const useCategoryModal = () => {
             setError("root", {
                 message: error.message
             })
+            toast.error('Failed create a category')
         },
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["Category"] });
             reset();
             setImage(null);
             setCategoryVisible(false);
+            toast.success('Success create a category');
         }
     })
 
@@ -78,7 +81,6 @@ const useCategoryModal = () => {
         setImage,
         reset
     }
-
 }
 
 export default useCategoryModal;
