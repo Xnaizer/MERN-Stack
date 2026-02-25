@@ -1,13 +1,9 @@
 'use client'
 import useDebounce from "@/hooks/useDebounce";
 import categoryServices from "@/services/category.service";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Key, ReactNode, useCallback, useMemo } from "react";
-import { CiMenuKebab } from "react-icons/ci";
-
+import { useCallback, useMemo } from "react";
 
 const useCategory = () => {
 
@@ -75,71 +71,8 @@ const useCategory = () => {
     const currentPageNum = Number(currentPage) || 1;
     const currentLimitNum = Number(currentLimit) || 10;
 
-
-    const renderCell = useCallback((
-        category: Record<string, unknown>,
-        columnKey: Key
-    ) => {
-        const cellValue = category[columnKey as keyof typeof category];
-
-        switch(columnKey) {
-            case "icon": {
-                
-                const value = String(cellValue ?? '');
-                const isValid = value.includes("/image/upload/") && !value.includes("player.cloudinary.com");
-
-                const src = isValid ? value : "https://res.cloudinary.com/dsurpllxe/image/upload/v1771536124/cancel_oxokbs.png";
-
-                return (
-                    <Image 
-                        src={src} 
-                        alt="icon"
-                        width={100}
-                        height={200}
-                    />
-                )
-            }
-            case "actions":
-                return (
-                    <Dropdown>
-                        <DropdownTrigger>
-                            <Button 
-                                isIconOnly
-                                size="sm"
-                                variant="light"
-                            >
-                                <CiMenuKebab 
-                                    className="text-default-700"
-                                />
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                        >
-                            <DropdownItem
-                            
-                                key="detail-category-button" 
-                                onPress={() => push(`/admin/category/${category._id}`)}
-                            >
-                                Detail Category
-                            </DropdownItem>
-
-                            <DropdownItem
-                                key="delete-category" 
-                                className="text-danger-500"
-                            >  
-                                Delete
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                )
-            default: 
-                return cellValue as ReactNode;
-        }
-
-    },[push]);
-
     const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        debounceSearch(e.target.value)
+        debounceSearch(e.target.value);
     }
 
     const debounceSearch = debounce((value: string) => {
@@ -224,10 +157,8 @@ const useCategory = () => {
         }
     }, [router, searchParams]);
 
-
-
     return {
-        renderCell,
+        push,
         handleClearSearch,
         handleChangeSearch,
         handleChangeLimit,
@@ -235,7 +166,6 @@ const useCategory = () => {
         setURL,
         handlePrevBtn,
         handleNextBtn,
-
         data: categories,
         pagination,
         currentPage: currentPageNum,
