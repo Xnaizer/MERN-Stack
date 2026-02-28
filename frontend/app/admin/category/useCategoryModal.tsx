@@ -32,10 +32,10 @@ const useCategoryModal = () => {
 
     const addCategoryService = async (payload: ICreateCategory) => {
     
-    const formData = new FormData();
-    formData.append("file", payload.icon);
+        const formData = new FormData();
+        formData.append("file", payload.icon);
 
-    const uploadRes = await mediaServices.uploadFile(formData);
+        const uploadRes = await mediaServices.uploadFile(formData);
         const imagesUrl = uploadRes.data.data.url;
         const iconIdData = uploadRes.data.data._id;
 
