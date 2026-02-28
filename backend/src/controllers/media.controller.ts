@@ -47,19 +47,22 @@ export default {
 
   async remove(req: IReqUser, res: Response) {
     try {
-      const { fileUrl } = req.body as { fileUrl: string };
+      const { fileUrl, iconId } = req.body as { fileUrl: string, iconId: string };
 
-      if (!fileUrl) {
+      if (!fileUrl || !iconId) {
         return response.error(res, null, 'File URL is required');
       }
 
       const result = await uploader.removeMedia(fileUrl);
+      const deleteResult = await ImageModel.findByIdAndDelete(iconId);
 
       if (result?.result === 'not found') {
         return response.notFound(res, 'File not found');
       }
 
-      response.success(res, result, 'Success remove file');
+      const data = [result, deleteResult];
+
+      response.success(res, data, 'Success remove file');
     } catch {
       response.error(res, null, 'Failed remove file');
     }

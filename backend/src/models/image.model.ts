@@ -34,7 +34,6 @@ export interface IImage extends Omit<TImage, 'createdBy'>{
     createdBy: ObjectId
 }
 
-
 const ImageSchema = new Schema<IImage>({
     url: {
         type: Schema.Types.String,

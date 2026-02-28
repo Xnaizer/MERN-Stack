@@ -97,11 +97,23 @@ export default {
             new: true,
         });
 
-        if (!result) {
+        const updateImg = await ImageModel.findByIdAndUpdate(result?.iconId,
+            {
+                status: 'permanent',
+                usedBy: 'category'
+            },
+            {
+                new: true
+            }
+        )
+
+        if (!result || !updateImg) {
             return response.notFound(res, 'Category not found');
         }
 
-        response.success(res,result, 'Success update category')
+        const data = [result, updateImg]
+
+        response.success(res,data, 'Success update category')
 
     } catch (error) {
         response.error(res, error, 'Failed update category')
@@ -123,7 +135,7 @@ export default {
         const image = await ImageModel.findByIdAndUpdate(result.iconId, {
             status: "temporary"
         });
-        
+
         const deleteImg = await uploader.removeMedia(result.icon);
 
         const data = [result, deleteImg, image];
