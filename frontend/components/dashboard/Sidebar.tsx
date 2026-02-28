@@ -68,7 +68,7 @@ const DashboardSidebar = (props: PropTypes) => {
                                 <Link
                                 href={items.href}
                                 className={cn(
-                                    `h-10 md:h-12 lg:h-14 flex items-center ${isOpen ? "justify-center": "justify-start"} px-2 gap-4 text-lg lg:text-2xl rounded-md `,
+                                    `h-10 md:h-12 lg:h-14 flex items-center ${isOpen ? "justify-center": "justify-start"} hover:bg-danger-500 hover:text-white px-2 gap-4 text-lg lg:text-2xl rounded-md `,
                                     {
                                     "bg-danger-500 text-white": isActive,
                                     }
