@@ -29,6 +29,9 @@ const useDeleteModal = () => {
 
   const { mutate: mutateDeleteCategories, isPending: isPendingDeleteCategory } = useMutation({
     mutationFn: deleteCategoryService,
+    onError: () => {
+      toast.error('Failed delete this category');
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["Category"]});
       handleClose();
