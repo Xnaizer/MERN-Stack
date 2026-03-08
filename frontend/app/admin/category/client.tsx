@@ -197,7 +197,6 @@ const CategoryClient: React.FC = () => {
                         <DropdownMenu
                         >
                             <DropdownItem
-                            
                               key="detail-category-button" 
                               onPress={() => push(`/admin/category/${category._id}`)}
                             >

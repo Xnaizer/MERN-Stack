@@ -6,7 +6,7 @@ import { HiArrowCircleLeft } from "react-icons/hi";
 import WarnModal from "@/components/ui/WarnModal";
 import NotFoundData from "@/components/ui/errors/not-found";
 import LoadingSpinner from "@/components/ui/loadings/LoadCategory";
-import CategoryDetailModal from "./CategoryModal";
+import CategoryDetailModal from "./CategoryDetailModal";
 
 interface IProps {
     paramsId: string;
@@ -93,7 +93,7 @@ const CategoryDetailClient: React.FC<IProps> = ({paramsId}) => {
                 defaultColour="danger"
                 onPending={catDetails.isPendingDeleteCategory}
             />
-            <CategoryDetailModal modalAdd={catDetails}/>
+            <CategoryDetailModal modalEdit={catDetails}/>
         </section>
     )
 }

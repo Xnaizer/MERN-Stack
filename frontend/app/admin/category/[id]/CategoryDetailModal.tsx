@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import InputFile from "@/components/ui/InputFile/InputFile";
 import {
@@ -10,10 +10,48 @@ import {
   Spinner,
   Textarea,
 } from "@heroui/react";
-import { Controller } from "react-hook-form";
+import { Control, Controller, FieldErrors, UseFormHandleSubmit } from "react-hook-form";
+
+interface Iprops {
+  modalEdit: {
+    handleOpenCategory?: () => void;
+    handleCloseCategory: () => void;
+    isCategoryVisible?: boolean;
+    control: Control<{
+        name: string;
+        description: string;
+        icon: any;
+    }, unknown, {
+        name: string;
+        description: string;
+        icon: any;
+    }>;
+    handleSubmit: UseFormHandleSubmit<{
+        name: string;
+        description: string;
+        icon: any;
+    }, {
+        name: string;
+        description: string;
+        icon: any;
+    }>;
+    errors: FieldErrors<{
+        name: string;
+        description: string;
+        icon: any;
+    }>;
+    reset: () => void;
+    isOpen: boolean;
+    setImage: (file: any) => void;
+    image: any;
+    handleEditCategory: (data: any) => void;
+    isPendingEditCategory: boolean;
+    setIsOpen: (open: boolean) => void;
+  }
+}
 
 
-const CategoryDetailModal: React.FC<any> = ({modalAdd}) => {
+const CategoryDetailModal: React.FC<Iprops> = ({modalEdit}) => {
 
   const {
     isOpen,
@@ -27,7 +65,7 @@ const CategoryDetailModal: React.FC<any> = ({modalAdd}) => {
     image,
     isPendingEditCategory,
     setIsOpen
-  } = modalAdd;
+  } = modalEdit;
 
   return (
     <section>
