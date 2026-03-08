@@ -11,13 +11,13 @@ const SIDEBAR_ADMIN = [
         key: "event",
         label: "Event",
         href: "/admin/event",
-        icon: <CiViewList/>
+        icon: <CiShoppingTag />
     },
     {
         key: "category",
         label: "Category",
         href: "/admin/category",
-        icon: <CiShoppingTag />
+        icon: <CiViewList/>
     },
     {
         key: "banner",
