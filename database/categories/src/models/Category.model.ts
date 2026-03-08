@@ -1,9 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose, {type ObjectId} from 'mongoose';
 
 export type TCategory = {
   name: string;
   description: string;
   icon: string;
+  iconId: ObjectId;
 }
 
 const Schema = mongoose.Schema;
@@ -22,6 +23,10 @@ const CategorySchema = new Schema<TCategory>(
       type: Schema.Types.String,
       required: true,
     },
+    iconId: {
+      type: Schema.Types.ObjectId,
+      required: true
+    }
   },
   {
     timestamps: true,

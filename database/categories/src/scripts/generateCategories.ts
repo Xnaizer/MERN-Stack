@@ -6,9 +6,11 @@ type CategoryJSON = {
     name: string;
     description: string;
     icon: string;
+    iconId: string;
 }
 
-const url = "https://res.cloudinary.com/dsurpllxe/image/upload/v1768732131/bvkchvcbfoc7cqlqht80.png";
+const url = "https://res.cloudinary.com/dsurpllxe/image/upload/v1772272661/mern_app_images/p8kvn30tfmadpmqbhxga.jpg";
+const iconId = '69a33f53240ec2f4823e1c07';
 
 const main = async () => {
     const items: CategoryJSON[] = [];
@@ -25,7 +27,8 @@ const main = async () => {
         items.push({
             name,
             description: faker.commerce.productDescription(),
-            icon: url
+            icon: url,
+            iconId: iconId
         })
     }
 

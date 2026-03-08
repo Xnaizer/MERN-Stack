@@ -8,6 +8,7 @@ type TCategory = {
     name: string;
     description: string;
     icon: string;
+    iconId: string;
 }
 
 const main = async () => {
